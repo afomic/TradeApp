@@ -2,17 +2,20 @@ package com.afomic.tradeapp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.afomic.tradeapp.R;
 import com.afomic.tradeapp.model.Currency;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by afomic on 1/7/18.
@@ -22,9 +25,9 @@ import java.util.HashMap;
 public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.CurrencyHolder>{
     private Context mContext;
     private ArrayList<Currency> mCurrencies;
-    private HashMap<Integer,Currency> mSelectedCurrencies;
-    private int selectedNumber=0;
-    public CurrencyAdapter(Context context,ArrayList<Currency> currencies,HashMap<Integer,Currency> selectedCurrencies){
+    private Map<Integer,Currency> mSelectedCurrencies;
+    private int totalSelectedCurrency=0;
+    public CurrencyAdapter(Context context,ArrayList<Currency> currencies,Map<Integer,Currency> selectedCurrencies){
         mContext=context;
         mCurrencies=currencies;
         mSelectedCurrencies=selectedCurrencies;
@@ -39,11 +42,12 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
     public void onBindViewHolder(CurrencyHolder holder, int position) {
         Currency currency=mCurrencies.get(position);
         holder.currencyCheckbox.setText(currency.getName());
-        holder.currencyCheckbox.setSelected(currency.isSelected());
-        if(selectedNumber==4){//after four currency has been selected
-            if(!currency.isSelected()){// if currency is not selected then disable it
-                holder.currencyCheckbox.setEnabled(false);
-            }
+        holder.currencyCheckbox.setTag(position);
+        holder.currencyCheckbox.setChecked(currency.isSelected());
+        if(totalSelectedCurrency==4){//after four currency has been selected
+            Toast.makeText(mContext,"You have reached the Maximum Selection",
+                    Toast.LENGTH_SHORT).show();
+            holder.currencyCheckbox.setEnabled(currency.isSelected());
         }
 
     }
@@ -62,30 +66,28 @@ public class CurrencyAdapter extends RecyclerView.Adapter<CurrencyAdapter.Curren
         public CurrencyHolder(View itemView) {
             super(itemView);
             currencyCheckbox=itemView.findViewById(R.id.cb_currency);
+            currencyCheckbox.setOnCheckedChangeListener(new CheckBoxListener());
+
         }
+
 
     }
     public class CheckBoxListener implements CompoundButton.OnCheckedChangeListener{
-        private int position;
-        public CheckBoxListener(int position){
-            this.position=position;
-        }
-
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            int position=(int) buttonView.getTag();
             Currency selectedCurrency=mCurrencies.get(position);
             if(isChecked){
                selectedCurrency.setSelected(true);
-               selectedNumber++;
+               totalSelectedCurrency++;
                mSelectedCurrencies.put(position,selectedCurrency);
             }else {
                 selectedCurrency.setSelected(false);
                 mSelectedCurrencies.remove(position);
-                selectedNumber--;
+                totalSelectedCurrency--;
             }
-            if(selectedNumber==4){// 4 currency has been selected re draw the whole list
-                notifyDataSetChanged();
-            }
+            // redraw the list each time an item state change
+            Log.e("tag", "onCheckedChanged: "+position );
         }
     }
     public boolean isValidSelection(){

@@ -11,7 +11,6 @@ import com.afomic.tradeapp.R;
 import com.afomic.tradeapp.model.Currency;
 import com.afomic.tradeapp.model.TradeAds;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,9 +18,9 @@ import java.util.List;
  */
 
 public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeAdsHolder>{
-    private ArrayList<TradeAds> mTradeAds;
+    private List<TradeAds> mTradeAds;
     private Context mContext;
-    public TradeAdsAdapter(Context context,ArrayList<TradeAds> tradeAds){
+    public TradeAdsAdapter(Context context,List<TradeAds> tradeAds){
         mContext=context;
         mTradeAds=tradeAds;
     }

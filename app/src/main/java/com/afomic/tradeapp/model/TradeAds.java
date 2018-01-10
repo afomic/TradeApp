@@ -1,22 +1,29 @@
 package com.afomic.tradeapp.model;
 
+import android.content.Context;
+
+import com.orm.SugarRecord;
+
 import java.util.List;
 
 /**
  * Created by afomic on 1/7/18.
  */
 
-public class TradeAds {
-    private String id;
+public class TradeAds extends SugarRecord {
+    private long id;
     private String userId;
     private List<Currency> currencyToSell;
     private List<Currency> currencyToBuy;
 
-    public String getId() {
+    public TradeAds(){
+
+    }
+    public long getTradeId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 
