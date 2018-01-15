@@ -61,12 +61,7 @@ public class CreateTradeAdActivity extends AppCompatActivity {
     }
     @OnClick(R.id.btn_submit)
     public void submitTradeAd(){
-        TradeAds tradeAds=new TradeAds();
-        List<Currency> buyCurrencyList=new ArrayList<>(selectedBuyCurrency.values());
-        List<Currency> sellCurrencyList=new ArrayList<>(selectedSellCurrency.values());
-        tradeAds.setCurrencyToBuy(buyCurrencyList);
-        tradeAds.setCurrencyToSell(sellCurrencyList);
-        tradeAds.save();
+       finish();
 
     }
     public static int getColumnNo(Context context) {

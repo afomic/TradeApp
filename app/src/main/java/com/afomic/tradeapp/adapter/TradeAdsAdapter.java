@@ -42,33 +42,33 @@ public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeA
         //each trade ad will have a minimum of one buy currency and sell currency
         holder.currencyOneBuyTextView.setText(buyCurrency.get(0).getName());
         holder.currencyOneSellTextView.setText(sellCurrency.get(0).getName());
-        if(sellCurrencyLength>0){//there is more than 1 sell currency
+        if(sellCurrencyLength>1){//there is more than 1 sell currency
             holder.currencyTwoSellTextView.setText(sellCurrency.get(1).getName());
         }else {
             holder.currencyTwoSellTextView.setVisibility(View.GONE);
         }
-        if(sellCurrencyLength>1){//there is more than 2 sell currency
+        if(sellCurrencyLength>2){//there is more than 2 sell currency
             holder.currencyThreeSellTextView.setText(sellCurrency.get(2).getName());
         }else {
             holder.currencyThreeSellTextView.setVisibility(View.GONE);
         }
-        if(sellCurrencyLength>2){//there is more than 1 sell currency
+        if(sellCurrencyLength>3){//there is more than 1 sell currency
             holder.currencyFourSellTextView.setText(sellCurrency.get(3).getName());
         }else {
             holder.currencyFourSellTextView.setVisibility(View.GONE);
         }
         //for the buy currency
-        if(buyCurrencyLength>0){//there is more than 1 buy currency
+        if(buyCurrencyLength>1){//there is more than 1 buy currency
             holder.currencyTwoBuyTextView.setText(buyCurrency.get(1).getName());
         }else {
             holder.currencyTwoBuyTextView.setVisibility(View.GONE);
         }
-        if(buyCurrencyLength>1){//there is more than 1 buy currency
+        if(buyCurrencyLength>2){//there is more than 1 buy currency
             holder.currencyThreeBuyTextView.setText(buyCurrency.get(2).getName());
         }else {
             holder.currencyThreeBuyTextView.setVisibility(View.GONE);
         }
-        if(buyCurrencyLength>2){//there is more than 1 sell currency
+        if(buyCurrencyLength>3){//there is more than 1 sell currency
             holder.currencyFourBuyTextView.setText(buyCurrency.get(3).getName());
         }else {
             holder.currencyFourBuyTextView.setVisibility(View.GONE);
@@ -78,7 +78,7 @@ public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeA
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mTradeAds.size();
     }
 
     public class TradeAdsHolder extends RecyclerView.ViewHolder{
