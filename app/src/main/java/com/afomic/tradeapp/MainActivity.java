@@ -19,7 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TradeAdsAdapter.TradeAdsListener {
     @BindView(R.id.rv_trade_ads)
     RecyclerView tradeAdsRecyclerView;
     TradeAdsAdapter mTradeAdsAdapter;
@@ -57,4 +57,9 @@ public class MainActivity extends AppCompatActivity {
         return currencies;
     }
 
+    @Override
+    public void onClick() {
+        Intent intent=new Intent(MainActivity.this,ChatActivity.class);
+        startActivity(intent);
+    }
 }

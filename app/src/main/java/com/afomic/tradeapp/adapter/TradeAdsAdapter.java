@@ -20,9 +20,11 @@ import java.util.List;
 public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeAdsHolder>{
     private List<TradeAds> mTradeAds;
     private Context mContext;
+    private TradeAdsListener mTradeAdsListener;
     public TradeAdsAdapter(Context context,List<TradeAds> tradeAds){
         mContext=context;
         mTradeAds=tradeAds;
+        mTradeAdsListener=(TradeAdsListener) context;
     }
 
     @Override
@@ -81,7 +83,7 @@ public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeA
         return mTradeAds.size();
     }
 
-    public class TradeAdsHolder extends RecyclerView.ViewHolder{
+    public class TradeAdsHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView currencyOneBuyTextView, currencyTwoBuyTextView,  currencyTwoSellTextView,
                 currencyThreeBuyTextView, currencyFourBuyTextView, currencyOneSellTextView,
         currencyThreeSellTextView, currencyFourSellTextView;
@@ -95,6 +97,15 @@ public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeA
             currencyTwoSellTextView=itemView.findViewById(R.id.tv_sell_2);
             currencyThreeSellTextView=itemView.findViewById(R.id.tv_sell_3);
             currencyFourSellTextView=itemView.findViewById(R.id.tv_sell_4);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            mTradeAdsListener.onClick();
+        }
+    }
+    public  interface  TradeAdsListener{
+        void onClick();
     }
 }
