@@ -2,7 +2,6 @@ package com.afomic.tradeapp.model;
 
 import android.content.Context;
 
-import com.orm.SugarRecord;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * Created by afomic on 1/7/18.
  */
 
-public class TradeAds extends SugarRecord {
+public class TradeAds {
     private long id;
     private String userId;
     private List<Currency> currencyToSell;

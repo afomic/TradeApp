@@ -1,14 +1,17 @@
 package com.afomic.tradeapp;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.afomic.tradeapp.adapter.ChatAdapter;
-import com.afomic.tradeapp.model.ChatMessage;
+import com.afomic.tradeapp.adapter.MessageAdapter;
+import com.afomic.tradeapp.model.Message;
 
 import java.util.ArrayList;
 
@@ -21,9 +24,12 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView chatRecyclerView;
     @BindView(R.id.edt_chat_message)
     EditText chatMessageEditText;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
     int count=0;
-    ChatAdapter mChatAdapter;
-    ArrayList<ChatMessage> mChatMessages;
+    MessageAdapter mMessageAdapter;
+    ArrayList<Message> mMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +37,19 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
+        setSupportActionBar(mToolbar);
+//        mPreferenceManager=new PreferenceManager(this);
+        ActionBar actionBar=getSupportActionBar();
+
+        if(actionBar!=null){
+            actionBar.setTitle("Chat");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mChatMessages=new ArrayList<>();
-        mChatAdapter=new ChatAdapter(ChatActivity.this,mChatMessages);
-        chatRecyclerView.setAdapter(mChatAdapter);
+        mMessages =new ArrayList<>();
+        mMessageAdapter =new MessageAdapter(ChatActivity.this, mMessages);
+        chatRecyclerView.setAdapter(mMessageAdapter);
     }
     @OnClick(R.id.fab_send)
     public void sentMessage(){
@@ -42,14 +57,21 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(ChatActivity.this,"You cant Send empty message",
                     Toast.LENGTH_SHORT).show();
         }else {
-            ChatMessage chatMessage=new ChatMessage();
-            chatMessage.setMessage(chatMessageEditText.getText().toString());
-            mChatMessages.add(chatMessage);
+            Message message =new Message();
+            message.setMessage(chatMessageEditText.getText().toString());
+            mMessages.add(message);
             chatMessageEditText.setText("");
             chatRecyclerView.scrollToPosition(count);
-            mChatAdapter.notifyItemInserted(count);
+            mMessageAdapter.notifyItemInserted(count);
             count++;
 
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

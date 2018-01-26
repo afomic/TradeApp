@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TradeAPP</string>
+    <string name="google_maps_key">AIzaSyABV5jnyUJBsqiXspWVArSSlhiFvTssHVY</string>
 </resources>

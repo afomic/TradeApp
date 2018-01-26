@@ -3,24 +3,15 @@
           package="com.afomic.tradeapp">
 
     <application
-        android:name=".SugarOrmApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <meta-data
-            android:name="DATABASE"
-            android:value="sugar_example.db"/>
-        <meta-data
-            android:name="VERSION"
-            android:value="2"/>
-        <meta-data
-            android:name="QUERY_LOG"
-            android:value="true"/>
-        <meta-data
-            android:name="DOMAIN_PACKAGE_NAME"
-            android:value="com.afomic.tradeapp.model"/>
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -34,6 +25,8 @@
         <activity android:name=".ChatActivity">
         </activity>
         <activity android:name=".TradeAdsDetailsActivity">
+        </activity>
+        <activity android:name=".MapActivity">
         </activity>
     </application>
 

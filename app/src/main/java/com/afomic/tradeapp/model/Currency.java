@@ -1,13 +1,12 @@
 package com.afomic.tradeapp.model;
 
-import com.orm.SugarRecord;
 
 /**
  * Created by afomic on 1/7/18.
  *
  */
 
-public class Currency extends SugarRecord {
+public class Currency {
     private String name;
     private boolean selected;
 

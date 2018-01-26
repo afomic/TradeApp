@@ -5,7 +5,7 @@ package com.afomic.tradeapp.model;
  * Created by afomic on 1/19/18.
  */
 
-public class ChatMessage {
+public class Message {
     private String message;
     private String id;
     private long time;

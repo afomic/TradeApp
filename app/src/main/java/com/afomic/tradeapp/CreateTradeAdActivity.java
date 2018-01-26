@@ -1,12 +1,15 @@
 package com.afomic.tradeapp;
 
 import android.content.Context;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.SparseArray;
+import android.view.MenuItem;
 
 import com.afomic.tradeapp.adapter.CurrencyAdapter;
 import com.afomic.tradeapp.model.Currency;
@@ -26,6 +29,8 @@ public class CreateTradeAdActivity extends AppCompatActivity {
     RecyclerView sellCurrencyList;
     @BindView(R.id.rv_currency_buy)
     RecyclerView buyCurrencyList;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     CurrencyAdapter buyCurrencyAdapter;
     CurrencyAdapter sellCurrencyAdapter;
@@ -38,6 +43,14 @@ public class CreateTradeAdActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_trade_ad);
         ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar=getSupportActionBar();
+
+        if(actionBar!=null){
+            actionBar.setTitle("Create Ad");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         int columnNumber=getColumnNo(CreateTradeAdActivity.this);
 
@@ -78,5 +91,13 @@ public class CreateTradeAdActivity extends AppCompatActivity {
             currencies.add(new Currency("BTC"+i));
         }
         return currencies;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
