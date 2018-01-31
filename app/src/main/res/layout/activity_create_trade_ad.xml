@@ -6,14 +6,15 @@
     android:layout_width="match_parent"
     android:gravity="center_horizontal"
     android:layout_height="match_parent"
-    tools:context="com.afomic.tradeapp.CreateTradeAdActivity">
+    tools:context="com.afomic.tradeapp.CreateTradeAdActivity"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:background="@color/colorWhite"
+            app:titleTextColor="@color/colorWhite"
             android:layout_height="?attr/actionBarSize"/>
     </android.support.design.widget.AppBarLayout>
     <android.support.v7.widget.CardView
@@ -27,16 +28,32 @@
             android:layout_height="wrap_content">
             <TextView
                 android:padding="8dp"
-                android:text="Currency to convert from"
+                android:text="Currency to Offer"
                 android:layout_width="match_parent"
                 android:textSize="18sp"
                 android:layout_height="wrap_content"/>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_currency_sell"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <CheckBox
+                    android:text="BTC"
+                    android:padding="@dimen/dimen_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:text="DCR"
+                    android:padding="@dimen/dimen_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:text="CASH"
+                    android:padding="@dimen/dimen_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
+        </LinearLayout>
     </android.support.v7.widget.CardView>
     <ImageView
         android:src="@drawable/ic_down"
@@ -54,18 +71,78 @@
             android:layout_height="wrap_content">
             <TextView
                 android:padding="8dp"
-                android:text="Currency to convert to"
+                android:text="Currency to Receive"
                 android:layout_width="match_parent"
                 android:textSize="18sp"
                 android:layout_height="wrap_content"/>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_currency_buy"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <CheckBox
+                    android:text="BTC"
+                    android:padding="@dimen/dimen_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:text="DCR"
+                    android:padding="@dimen/dimen_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <CheckBox
+                    android:text="CASH"
+                    android:padding="@dimen/dimen_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
 
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+           <LinearLayout
+               android:orientation="horizontal"
+               android:gravity="center_vertical"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+               <TextView
+                   android:padding="8dp"
+                   android:text="Current Location"
+                   android:layout_width="0dp"
+                   android:layout_weight="1
+"
+                   android:textSize="18sp"
+                   android:layout_height="wrap_content"/>
+               <ImageButton
+                   android:id="@+id/btn_edit"
+                   android:padding="@dimen/dimen_8"
+                   android:src="@drawable/ic_edit_black"
+                   android:background="@color/colorWhite"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"/>
+           </LinearLayout>
+
+            <TextView
+                android:padding="@dimen/dimen_8"
+                android:text="Lagos"
+                android:textSize="16sp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
     <Button
         android:text="Submit"
         android:textColor="#fff"

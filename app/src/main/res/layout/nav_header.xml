@@ -2,11 +2,14 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
     android:layout_height="200dp">
     <de.hdodenhof.circleimageview.CircleImageView
-        android:src="@drawable/decred"
-        android:layout_width="100dp"
+        android:src="@drawable/logo"
+        app:civ_border_color="@color/colorWhite"
+        app:civ_border_width="@dimen/dimen_8"
+        android:layout_width="1200dp"
         android:layout_centerInParent="true"
-        android:layout_height="100dp"/>
+        android:layout_height="120dp"/>
 </RelativeLayout>

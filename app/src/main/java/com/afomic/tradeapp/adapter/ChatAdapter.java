@@ -1,11 +1,13 @@
 package com.afomic.tradeapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afomic.tradeapp.ChatActivity;
 import com.afomic.tradeapp.R;
 import com.afomic.tradeapp.model.Chat;
 
@@ -43,9 +45,16 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
         return 0;
     }
 
-    public class ChatHolder extends RecyclerView.ViewHolder{
+    public class ChatHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ChatHolder(View itemView) {
             super(itemView);
+             itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent=new Intent(mContext, ChatActivity.class);
+            mContext.startActivity(intent);
         }
     }
 }

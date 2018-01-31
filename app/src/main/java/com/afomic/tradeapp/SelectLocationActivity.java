@@ -1,55 +1,59 @@
 package com.afomic.tradeapp;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.afomic.tradeapp.data.PreferenceManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TradeAdsDetailsActivity extends AppCompatActivity{
-
+public class SelectLocationActivity extends AppCompatActivity {
+    @BindView(R.id.edt_user_location)
+    EditText userLocationEditText;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    private GoogleMap mMap;
+
+    PreferenceManager mPreferenceManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trade_ads_details);
+        setContentView(R.layout.activity_select_location);
         ButterKnife.bind(this);
+
 
         setSupportActionBar(mToolbar);
 //        mPreferenceManager=new PreferenceManager(this);
         ActionBar actionBar=getSupportActionBar();
 
         if(actionBar!=null){
-            actionBar.setTitle("Ad details");
+            actionBar.setTitle("Set Location");
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        mPreferenceManager=new PreferenceManager(this);
+        String currentLocation=mPreferenceManager.getUserLocation();
+        if(!currentLocation.equals("not found")){
+            userLocationEditText.setText(currentLocation);
+        }
     }
-    @OnClick(R.id.btn_chat)
-    public void onChatUser(){
-        Intent intent=new Intent(getApplicationContext(),ChatActivity.class);
-        startActivity(intent);
-    }
-    @OnClick(R.id.btn_locate)
-    public void checkoutOnMap(){
-        Intent intent= new Intent(getApplicationContext(),MapActivity.class);
-        startActivity(intent);
+    @OnClick(R.id.btn_submit_location)
+    public void changeUserLocation(){
+        if(userLocationEditText.getText().toString().equals("")){
+            Toast.makeText(SelectLocationActivity.this,
+                    "You cannot submit empty Location",Toast.LENGTH_SHORT).show();
+        }else {
+            mPreferenceManager.setUserLocation(userLocationEditText.getText().toString());
+            finish();
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -58,5 +62,5 @@ public class TradeAdsDetailsActivity extends AppCompatActivity{
         }
         return super.onOptionsItemSelected(item);
     }
-
 }
+

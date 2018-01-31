@@ -21,10 +21,10 @@ public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeA
     private List<TradeAds> mTradeAds;
     private Context mContext;
     private TradeAdsListener mTradeAdsListener;
-    public TradeAdsAdapter(Context context,List<TradeAds> tradeAds){
+    public TradeAdsAdapter(Context context,List<TradeAds> tradeAds,TradeAdsListener listener){
         mContext=context;
         mTradeAds=tradeAds;
-        mTradeAdsListener=(TradeAdsListener) context;
+        mTradeAdsListener=listener;
     }
 
     @Override

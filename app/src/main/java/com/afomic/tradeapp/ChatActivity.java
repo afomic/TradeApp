@@ -43,6 +43,7 @@ public class ChatActivity extends AppCompatActivity {
 
         if(actionBar!=null){
             actionBar.setTitle("Chat");
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
