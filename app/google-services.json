@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "300137761801",
+    "firebase_url": "https://tradeapp-79684.firebaseio.com",
+    "project_id": "tradeapp-79684",
+    "storage_bucket": "tradeapp-79684.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300137761801:android:efa50f4972c7fd4d",
+        "android_client_info": {
+          "package_name": "com.afomic.tradeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "300137761801-fgj384bjmte5vmpbqcf2ooa339m54vss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.afomic.tradeapp",
+            "certificate_hash": "24722e110244fcb4da0ea26a0df176cd257d32b5"
+          }
+        },
+        {
+          "client_id": "300137761801-9u2u5alhon8tngnsf4p5p7r6snupi1cn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEu7R7WZjeqP1Y6S5sf3DJbQZ_COA0dbo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "300137761801-9u2u5alhon8tngnsf4p5p7r6snupi1cn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

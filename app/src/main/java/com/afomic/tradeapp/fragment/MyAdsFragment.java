@@ -15,10 +15,9 @@ import android.view.ViewGroup;
 
 import com.afomic.tradeapp.CreateTradeAdActivity;
 import com.afomic.tradeapp.R;
-import com.afomic.tradeapp.TradeAdsDetailsActivity;
 import com.afomic.tradeapp.adapter.TradeAdsAdapter;
 import com.afomic.tradeapp.model.Currency;
-import com.afomic.tradeapp.model.TradeAds;
+import com.afomic.tradeapp.model.TradeAd;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,9 +33,15 @@ import butterknife.Unbinder;
 public class MyAdsFragment extends Fragment {
     @BindView(R.id.rv_trade_ads)
     RecyclerView tradeAdsRecyclerView;
-    TradeAdsAdapter mTradeAdsAdapter;
+
     private Unbinder mUnbinder;
+
+
     private TradeAdsAdapter.TradeAdsListener mTradeAdsListener;
+    private TradeAdsAdapter mTradeAdsAdapter;
+    private ArrayList<TradeAd> mTradeAds;
+
+
 
     public static MyAdsFragment newInstance(){
         return new MyAdsFragment();
@@ -46,6 +51,7 @@ public class MyAdsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mTradeAds=new ArrayList<>();
     }
 
     @Nullable
@@ -61,28 +67,11 @@ public class MyAdsFragment extends Fragment {
                 startActivity(intent);
             }
         };
-        mTradeAdsAdapter=new TradeAdsAdapter(getActivity(),getDummyData(),mTradeAdsListener);
+        mTradeAdsAdapter=new TradeAdsAdapter(getActivity(),mTradeAds,mTradeAdsListener);
         tradeAdsRecyclerView.setAdapter(mTradeAdsAdapter);
         return v;
     }
-    public ArrayList<TradeAds> getDummyData(){
-        ArrayList<TradeAds> dummyData=new ArrayList<>();
-        for(int i=0;i<2;i++){
-            TradeAds ads=new TradeAds();
-            ads.setCurrencyToSell(getDummyCurrencyData());
-            ads.setCurrencyToBuy(getDummyCurrencyData());
-            dummyData.add(ads);
-        }
-        return dummyData;
-    }
-    public ArrayList<Currency> getDummyCurrencyData(){
-        int length=new Random().nextInt(4)+1;
-        ArrayList<Currency> currencies=new ArrayList<>();
-        for(int i=0;i<length;i++){
-            currencies.add(new Currency("BTC"+i));
-        }
-        return currencies;
-    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

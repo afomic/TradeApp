@@ -39,15 +39,18 @@
                 <CheckBox
                     android:text="BTC"
                     android:padding="@dimen/dimen_8"
+                    android:id="@+id/ch_offer_btc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <CheckBox
                     android:text="DCR"
                     android:padding="@dimen/dimen_8"
+                    android:id="@+id/ch_offer_dcr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <CheckBox
-                    android:text="CASH"
+                    android:text="Cash"
+                    android:id="@+id/ch_offer_cash"
                     android:padding="@dimen/dimen_8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -82,15 +85,18 @@
                 <CheckBox
                     android:text="BTC"
                     android:padding="@dimen/dimen_8"
+                    android:id="@+id/ch_receive_btc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <CheckBox
                     android:text="DCR"
                     android:padding="@dimen/dimen_8"
+                    android:id="@+id/ch_receive_dcr"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <CheckBox
-                    android:text="CASH"
+                    android:text="Cash"
+                    android:id="@+id/ch_receive_cash"
                     android:padding="@dimen/dimen_8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>

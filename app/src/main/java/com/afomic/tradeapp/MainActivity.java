@@ -1,50 +1,33 @@
 package com.afomic.tradeapp;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 
-import com.afomic.tradeapp.adapter.TradeAdsAdapter;
 import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.fragment.ChatListFragment;
 import com.afomic.tradeapp.fragment.HomeFragment;
 import com.afomic.tradeapp.fragment.MyAdsFragment;
 import com.afomic.tradeapp.fragment.UserDetailsFragment;
-import com.afomic.tradeapp.model.Currency;
-import com.afomic.tradeapp.model.TradeAds;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
+import com.afomic.tradeapp.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,7 +40,21 @@ public class MainActivity extends AppCompatActivity {
 
     ActionBar actionBar;
 
+    private FirebaseAuth mAuth;
+    private FirebaseUser mFirebaseUser;
+    private DatabaseReference userDatabaseRef;
+    PreferenceManager mPreferenceManager;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth=FirebaseAuth.getInstance();
+        mFirebaseUser=mAuth.getCurrentUser();
+        if(mFirebaseUser==null){
+            loginUser();
+        }
+        userDatabaseRef= FirebaseDatabase.getInstance().getReference("users");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +62,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+
         setSupportActionBar(mToolbar);
-//        mPreferenceManager=new PreferenceManager(this);
+        mPreferenceManager=new PreferenceManager(this);
         actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -128,6 +126,26 @@ public class MainActivity extends AppCompatActivity {
         mDrawer.closeDrawers();
         fm.beginTransaction().replace(R.id.main_container,frag).commit();
 
+    }
+    public void loginUser(){
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            FirebaseUser user=task.getResult().getUser();
+                            User currentUser=new User();
+                            String userId=user.getUid();
+                            currentUser.setUserId(userId);
+                            mPreferenceManager.setUserId(userId);
+                            currentUser.setMemberSince(System.currentTimeMillis());
+                            userDatabaseRef.child(userId)
+                                    .setValue(currentUser);
+                        }
+
+
+                    }
+                });
     }
 
     @Override

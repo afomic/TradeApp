@@ -10,6 +10,37 @@ public class Message {
     private String id;
     private long time;
     private String senderId;
+    private String pictureUrl;
+    private String recipientId;
+    private String chatId;
+
+    public Message(){
+
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
+    public String getRecipientId() {
+        return recipientId;
+    }
+
+    public void setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
+    }
+
+    public String getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
+    }
 
     public String getMessage() {
         return message;

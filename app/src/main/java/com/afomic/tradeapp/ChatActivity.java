@@ -11,7 +11,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.afomic.tradeapp.adapter.MessageAdapter;
+import com.afomic.tradeapp.data.Constants;
+import com.afomic.tradeapp.data.PreferenceManager;
+import com.afomic.tradeapp.model.Chat;
 import com.afomic.tradeapp.model.Message;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -24,12 +29,19 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView chatRecyclerView;
     @BindView(R.id.edt_chat_message)
     EditText chatMessageEditText;
-
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+
+
     int count=0;
-    MessageAdapter mMessageAdapter;
-    ArrayList<Message> mMessages;
+
+
+    private MessageAdapter mMessageAdapter;
+    private ArrayList<Message> mMessages;
+    private PreferenceManager mPreferenceManager;
+    private Chat currentChat;
+
+    private DatabaseReference chatRef,messageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +50,17 @@ public class ChatActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-//        mPreferenceManager=new PreferenceManager(this);
+        mPreferenceManager=new PreferenceManager(this);
+
+        chatRef= FirebaseDatabase
+                .getInstance()
+                .getReference(Constants.CHATS_REF);
+        messageRef=FirebaseDatabase
+                .getInstance()
+                .getReference(Constants.MESSAGES_REF)
+                .child(currentChat.getId());
+
+        currentChat=getIntent().getParcelableExtra(Constants.EXTRA_CHAT);
         ActionBar actionBar=getSupportActionBar();
 
         if(actionBar!=null){

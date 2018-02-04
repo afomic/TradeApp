@@ -1,37 +1,63 @@
 package com.afomic.tradeapp;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afomic.tradeapp.data.Constants;
+import com.afomic.tradeapp.data.PreferenceManager;
+import com.afomic.tradeapp.model.Chat;
+import com.afomic.tradeapp.model.TradeAd;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class TradeAdsDetailsActivity extends AppCompatActivity{
-
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    private GoogleMap mMap;
+    @BindView(R.id.tv_last_seen)
+    TextView lastSeenTextView;
+    @BindView(R.id.tv_username)
+    TextView usernameTextView;
+    @BindView(R.id.tv_taking)
+    TextView takesTextView;
+    @BindView(R.id.tv_offer)
+    TextView offersTextView;
+
+    private PreferenceManager mPreferenceManager;
+    private TradeAd currentTradeAd;
+
+    private DatabaseReference chatRef;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_ads_details);
         ButterKnife.bind(this);
 
+        currentTradeAd=getIntent().getParcelableExtra(Constants.EXTRA_TRADE_AD);
+
+        chatRef= FirebaseDatabase.getInstance().getReference(Constants.CHATS_REF);
+
         setSupportActionBar(mToolbar);
-//        mPreferenceManager=new PreferenceManager(this);
+        mPreferenceManager=new PreferenceManager(this);
         ActionBar actionBar=getSupportActionBar();
 
         if(actionBar!=null){
@@ -39,16 +65,40 @@ public class TradeAdsDetailsActivity extends AppCompatActivity{
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
+        usernameTextView.setText(currentTradeAd.getUsername());
+        takesTextView.setText(currentTradeAd.getCurrencyToBuy());
+        offersTextView.setText(currentTradeAd.getCurrencyToSell());
     }
     @OnClick(R.id.btn_chat)
     public void onChatUser(){
-        Intent intent=new Intent(getApplicationContext(),ChatActivity.class);
-        startActivity(intent);
+        final Chat chat=new Chat();
+        String chatId=chatRef.push().getKey();
+        chat.setId(chatId);
+        chat.setUserOne(mPreferenceManager.getUsername());
+        chat.setUserTwo(currentTradeAd.getUsername());
+        chat.setLastUpdate(System.currentTimeMillis());
+        chatRef.child(chatId)
+                .setValue(chat)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Intent intent=new Intent(getApplicationContext(),ChatActivity.class);
+                        intent.putExtra(Constants.EXTRA_CHAT,chat);
+                        startActivity(intent);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("tag", "onFailure: ", e);
+            }
+        });
+
     }
     @OnClick(R.id.btn_locate)
     public void checkoutOnMap(){
         Intent intent= new Intent(getApplicationContext(),MapActivity.class);
+        intent.putExtra(Constants.EXTRA_TRADE_LATITUDE,currentTradeAd.getLocationLatitude());
+        intent.putExtra(Constants.EXTRA_TRADE_LONGITUDE,currentTradeAd.getLocationLongitude());
         startActivity(intent);
     }
     @Override
