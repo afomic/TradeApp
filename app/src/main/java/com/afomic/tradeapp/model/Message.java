@@ -13,6 +13,8 @@ public class Message {
     private String chatId;
     private boolean delivered;
     private boolean read;
+    private String recipientId;
+    private String senderId;
 
     public Message(){
 
