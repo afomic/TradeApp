@@ -20,12 +20,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afomic.tradeapp.ChatActivity;
+import com.afomic.tradeapp.CreateTradeAdActivity;
 import com.afomic.tradeapp.R;
 import com.afomic.tradeapp.SelectLocationActivity;
 import com.afomic.tradeapp.TradeAdsDetailsActivity;
 import com.afomic.tradeapp.adapter.TradeAdsAdapter;
 import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
+import com.afomic.tradeapp.model.Chat;
 import com.afomic.tradeapp.model.TradeAd;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -58,7 +61,7 @@ public class HomeFragment extends Fragment {
 
 
 
-    TradeAdsAdapter mTradeAdsAdapter;
+    private TradeAdsAdapter mTradeAdsAdapter;
     private Unbinder mUnbinder;
     private PreferenceManager mPreferenceManager;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -102,8 +105,10 @@ public class HomeFragment extends Fragment {
         tradeAdsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTradeAdsListener= new TradeAdsAdapter.TradeAdsListener() {
             @Override
-            public void onClick() {
+            public void onClick(int position) {
+                TradeAd tradeAd=mTradeAds.get(position);
                 Intent intent=new Intent(getActivity(),TradeAdsDetailsActivity.class);
+                intent.putExtra(Constants.EXTRA_TRADE_AD,tradeAd);
                 startActivity(intent);
             }
         };

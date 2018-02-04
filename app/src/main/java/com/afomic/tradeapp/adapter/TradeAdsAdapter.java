@@ -67,11 +67,11 @@ public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeA
 
         @Override
         public void onClick(View v) {
-            mTradeAdsListener.onClick();
+            mTradeAdsListener.onClick(getAdapterPosition());
         }
     }
     public  interface  TradeAdsListener{
-        void onClick();
+        void onClick(int position);
     }
 
     public float getLocationDifference(TradeAd ads){

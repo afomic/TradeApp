@@ -16,8 +16,16 @@ import android.view.ViewGroup;
 import com.afomic.tradeapp.CreateTradeAdActivity;
 import com.afomic.tradeapp.R;
 import com.afomic.tradeapp.adapter.TradeAdsAdapter;
+import com.afomic.tradeapp.data.Constants;
+import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.Currency;
 import com.afomic.tradeapp.model.TradeAd;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,6 +36,7 @@ import butterknife.Unbinder;
 
 /**
  * Created by afomic on 1/30/18.
+ *
  */
 
 public class MyAdsFragment extends Fragment {
@@ -40,6 +49,8 @@ public class MyAdsFragment extends Fragment {
     private TradeAdsAdapter.TradeAdsListener mTradeAdsListener;
     private TradeAdsAdapter mTradeAdsAdapter;
     private ArrayList<TradeAd> mTradeAds;
+    private Query myTradeAdRef;
+    private PreferenceManager mPreferenceManager;
 
 
 
@@ -51,7 +62,14 @@ public class MyAdsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        mPreferenceManager=new PreferenceManager(getActivity());
         mTradeAds=new ArrayList<>();
+        myTradeAdRef= FirebaseDatabase
+                .getInstance()
+                .getReference(Constants.TRADE_ADS_REF)
+                .orderByChild("userId")
+                .equalTo(mPreferenceManager.getUserId());
+
     }
 
     @Nullable
@@ -62,13 +80,29 @@ public class MyAdsFragment extends Fragment {
         tradeAdsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTradeAdsListener= new TradeAdsAdapter.TradeAdsListener() {
             @Override
-            public void onClick() {
+            public void onClick(int position) {
+                TradeAd tradeAd=mTradeAds.get(position);
                 Intent intent=new Intent(getActivity(),CreateTradeAdActivity.class);
+                intent.putExtra(Constants.EXTRA_TRADE_AD,tradeAd);
                 startActivity(intent);
             }
         };
         mTradeAdsAdapter=new TradeAdsAdapter(getActivity(),mTradeAds,mTradeAdsListener);
         tradeAdsRecyclerView.setAdapter(mTradeAdsAdapter);
+        myTradeAdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                    TradeAd myAd=snapshot.getValue(TradeAd.class);
+                    mTradeAds.add(myAd);
+                }
+                mTradeAdsAdapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         return v;
     }
 
@@ -86,5 +120,11 @@ public class MyAdsFragment extends Fragment {
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUnbinder.unbind();
     }
 }

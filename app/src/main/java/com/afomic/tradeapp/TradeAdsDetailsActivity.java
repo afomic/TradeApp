@@ -37,7 +37,7 @@ public class TradeAdsDetailsActivity extends AppCompatActivity{
     TextView lastSeenTextView;
     @BindView(R.id.tv_username)
     TextView usernameTextView;
-    @BindView(R.id.tv_taking)
+    @BindView(R.id.tv_takes)
     TextView takesTextView;
     @BindView(R.id.tv_offer)
     TextView offersTextView;

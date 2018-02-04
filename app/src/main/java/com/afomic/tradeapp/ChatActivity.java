@@ -15,6 +15,9 @@ import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.Chat;
 import com.afomic.tradeapp.model.Message;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -48,6 +51,8 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
+        
+        currentChat=getIntent().getParcelableExtra(Constants.EXTRA_CHAT);
 
         setSupportActionBar(mToolbar);
         mPreferenceManager=new PreferenceManager(this);
@@ -60,11 +65,13 @@ public class ChatActivity extends AppCompatActivity {
                 .getReference(Constants.MESSAGES_REF)
                 .child(currentChat.getId());
 
-        currentChat=getIntent().getParcelableExtra(Constants.EXTRA_CHAT);
+
         ActionBar actionBar=getSupportActionBar();
+        String myUsername=mPreferenceManager.getUsername();
+        String recipient=currentChat.getUserTwo().equals(myUsername)?currentChat.getUserOne():currentChat.getUserTwo();
 
         if(actionBar!=null){
-            actionBar.setTitle("Chat");
+            actionBar.setTitle(recipient);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -73,6 +80,36 @@ public class ChatActivity extends AppCompatActivity {
         mMessages =new ArrayList<>();
         mMessageAdapter =new MessageAdapter(ChatActivity.this, mMessages);
         chatRecyclerView.setAdapter(mMessageAdapter);
+
+        messageRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Message message=dataSnapshot.getValue(Message.class);
+                mMessages.add(message);
+                int insertedPosition=mMessages.size()-1;
+                mMessageAdapter.notifyItemInserted(insertedPosition);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
     @OnClick(R.id.fab_send)
     public void sentMessage(){
@@ -80,7 +117,11 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(ChatActivity.this,"You cant Send empty message",
                     Toast.LENGTH_SHORT).show();
         }else {
+            String messageId=messageRef.push().getKey();
             Message message =new Message();
+            message.setId(messageId);
+            message.setChatId(currentChat.getId());
+            message.setTime(System.currentTimeMillis());
             message.setMessage(chatMessageEditText.getText().toString());
             mMessages.add(message);
             chatMessageEditText.setText("");

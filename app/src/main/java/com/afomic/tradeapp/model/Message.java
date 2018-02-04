@@ -9,10 +9,10 @@ public class Message {
     private String message;
     private String id;
     private long time;
-    private String senderId;
     private String pictureUrl;
-    private String recipientId;
     private String chatId;
+    private boolean delivered;
+    private boolean read;
 
     public Message(){
 
@@ -24,14 +24,6 @@ public class Message {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
-    }
-
-    public String getRecipientId() {
-        return recipientId;
-    }
-
-    public void setRecipientId(String recipientId) {
-        this.recipientId = recipientId;
     }
 
     public String getChatId() {
@@ -66,11 +58,19 @@ public class Message {
         this.time = time;
     }
 
-    public String getSenderId() {
-        return senderId;
+    public boolean isDelivered() {
+        return delivered;
     }
 
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
+    public void setDelivered(boolean delivered) {
+        this.delivered = delivered;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

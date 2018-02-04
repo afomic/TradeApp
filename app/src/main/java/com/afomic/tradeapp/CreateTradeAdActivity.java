@@ -42,8 +42,8 @@ public class CreateTradeAdActivity extends AppCompatActivity {
 
     private static final int TYPE_OFFER=0;
     private static final int TYPE_TAKING=1;
-    private static String offerCurrencyString;
-    private static String takingCurrencyString;
+    private static String offerCurrencyString="";
+    private static String takingCurrencyString="";
     private PreferenceManager mPreferenceManager;
     private DatabaseReference tradeAdsRef;
 
@@ -78,8 +78,8 @@ public class CreateTradeAdActivity extends AppCompatActivity {
         if(isValidEntry()){
             String tradeAdId=tradeAdsRef.push().getKey();
             TradeAd ads=new TradeAd();
-            ads.setCurrencyToBuy(takingCurrencyString);
-            ads.setCurrencyToSell(offerCurrencyString);
+            ads.setCurrencyToBuy(trimSelection(takingCurrencyString));
+            ads.setCurrencyToSell(trimSelection(offerCurrencyString));
             ads.setLocationLatitude(mPreferenceManager.getUserLatitude());
             ads.setLocationLongitude(mPreferenceManager.getUserLongitude());
             ads.setUsername(mPreferenceManager.getUsername());
@@ -145,12 +145,25 @@ public class CreateTradeAdActivity extends AppCompatActivity {
                 }
             }else {
                 if(type==TYPE_OFFER){
-                    offerCurrencyString.replace(nameWithComma,"") ;
+                    offerCurrencyString=removeString(offerCurrencyString,nameWithComma);
                 }else {
-                    takingCurrencyString.replace(nameWithComma,"") ;
+                    takingCurrencyString = removeString(takingCurrencyString,nameWithComma);
                 }
 
             }
         }
+    }
+    public static String removeString(String container,String text){
+        int start=container.indexOf( text);
+        int end=start+text.length();
+        StringBuilder builder=new StringBuilder(container);
+        builder.delete(start,end);
+        return builder.toString();
+    }
+    public String trimSelection(String selection){
+        int lastCommaPosition=selection.lastIndexOf(",");
+        StringBuilder builder=new StringBuilder(selection);
+        builder.deleteCharAt(lastCommaPosition);
+        return builder.toString().trim();
     }
 }
