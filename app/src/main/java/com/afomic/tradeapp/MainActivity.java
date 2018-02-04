@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 
+import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.fragment.ChatListFragment;
 import com.afomic.tradeapp.fragment.HomeFragment;
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         if(mFirebaseUser==null){
             loginUser();
         }
-        userDatabaseRef= FirebaseDatabase.getInstance().getReference("users");
+        userDatabaseRef= FirebaseDatabase.getInstance().getReference(Constants.USERS_REF);
     }
 
     @Override
@@ -137,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
                             User currentUser=new User();
                             String userId=user.getUid();
                             currentUser.setUserId(userId);
+                            currentUser.setUsername("Anonymous");
                             mPreferenceManager.setUserId(userId);
+                            mPreferenceManager.setUsername("Anonymous");
                             currentUser.setMemberSince(System.currentTimeMillis());
                             userDatabaseRef.child(userId)
                                     .setValue(currentUser);

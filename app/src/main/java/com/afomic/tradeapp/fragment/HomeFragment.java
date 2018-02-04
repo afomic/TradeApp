@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<TradeAd> mTradeAds;
 
 
-    private DatabaseReference tradeAdRef;
+    private DatabaseReference tradeAdRef,userRef;
 
     public static HomeFragment newInstance(){
         return new HomeFragment();
@@ -87,6 +87,7 @@ public class HomeFragment extends Fragment {
             setUserLocation();
         }
         tradeAdRef= FirebaseDatabase.getInstance().getReference(Constants.TRADE_ADS_REF);
+        userRef= FirebaseDatabase.getInstance().getReference(Constants.USERS_REF);
     }
 
     @Override
@@ -170,7 +171,6 @@ public class HomeFragment extends Fragment {
         protected String doInBackground(Location... locations) {
 
             try {
-                Log.e("tag", "onPostExecute: latitude"+locations[0].getLatitude()+": "+locations[0].getLongitude());
                 List<Address> addresses =geocoder.getFromLocation(locations[0].getLatitude(),locations[0].getLongitude(), 1);
                 Address address=addresses.get(0);
                 return address.getAdminArea()+", "+address.getCountryName();
@@ -208,6 +208,7 @@ public class HomeFragment extends Fragment {
                             if (location != null) {
                                 if(geocoder.isPresent()){
                                     Log.e("Tag", "onSuccess: is present ");
+
                                     new GeoCoderTask().execute(location);
                                 }else {
                                     Log.e("Tag", "onSuccess: not present ");
