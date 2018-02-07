@@ -39,9 +39,7 @@ public class ChatListFragment extends Fragment {
     @BindView(R.id.rv_chat_list)
     RecyclerView chatRecyclerView;
 
-
     private ChatAdapter mChatAdapter;
-    private PreferenceManager mPreferenceManager;
     private DatabaseReference chatRef;
     private ArrayList<Chat> mChats;
 
@@ -53,7 +51,6 @@ public class ChatListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPreferenceManager=new PreferenceManager( getActivity());
         chatRef= FirebaseDatabase.getInstance().getReference(Constants.CHATS_REF);
         mChats=new ArrayList<>();
 
@@ -102,6 +99,13 @@ public class ChatListFragment extends Fragment {
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Chat movedChat=dataSnapshot.getValue(Chat.class);
+                int fromPosition=findAdById(movedChat.getId());
+                if(fromPosition!=-1){
+                    mChats.remove(fromPosition);
+                    mChats.add(0,movedChat);
+                    mChatAdapter.notifyItemMoved(fromPosition,0);
+                }
 
             }
 

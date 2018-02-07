@@ -3,7 +3,6 @@ package com.afomic.tradeapp.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,22 +13,30 @@ import com.afomic.tradeapp.R;
 import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.Chat;
+import com.afomic.tradeapp.model.Message;
+import com.afomic.tradeapp.util.DateUtil;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 /**
- * Created by afomic on 1/24/18.
+ * Created by afo mic on 1/24/18.
+ *
  */
 
 public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
     private Context mContext;
     private ArrayList<Chat> mChats;
     private String username;
+    private PreferenceManager mPreferenceManager;
 
     public ChatAdapter(Context context,ArrayList<Chat> chats){
         mChats=chats;
         mContext=context;
-        PreferenceManager mPreferenceManager=new PreferenceManager(context);
+        mPreferenceManager=new PreferenceManager(context);
         username=mPreferenceManager.getUsername();
     }
     @Override
@@ -39,7 +46,7 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
     }
 
     @Override
-    public void onBindViewHolder(ChatHolder holder, int position) {
+    public void onBindViewHolder(final ChatHolder holder, int position) {
         Chat chatItem=mChats.get(position);
         // if i am user one then the person am chating with is userTwo
         if(chatItem.getUserOne().equals(username)){
@@ -48,8 +55,35 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
             holder.recipientTextView.setText(chatItem.getUserOne());
         }
         holder.lastMessageTextView.setText(chatItem.getLastMessage());
-        CharSequence lastUpdateTime= DateUtils.getRelativeTimeSpanString(chatItem.getLastUpdate());
+        String lastUpdateTime= DateUtil.formatDate(chatItem.getLastUpdate());
         holder.lastUpdateTextView.setText(lastUpdateTime);
+        FirebaseDatabase.getInstance()
+                .getReference(Constants.MESSAGES_REF)
+                .child(chatItem.getId())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        int count =0;
+                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            Message message=snapshot.getValue(Message.class);
+                            if(!message.getSenderId().equals(mPreferenceManager.getUserId())
+                                    &&!message.isRead()){
+                                count++;
+                            }
+                        }
+                        if(count>0){
+                            holder.unreadMentionTextView.setText(String.valueOf(count));
+                        }else {
+                            holder.unreadMentionTextView.setVisibility(View.GONE);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
     }
 
@@ -62,13 +96,14 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
     }
 
     public class ChatHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView recipientTextView, lastMessageTextView,lastUpdateTextView;
+        TextView recipientTextView, lastMessageTextView,lastUpdateTextView,unreadMentionTextView;
         public ChatHolder(View itemView) {
             super(itemView);
              itemView.setOnClickListener(this);
              recipientTextView=itemView.findViewById(R.id.tv_recipient);
              lastMessageTextView=itemView.findViewById(R.id.tv_last_message);
              lastUpdateTextView=itemView.findViewById(R.id.tv_last_update);
+             unreadMentionTextView=itemView.findViewById(R.id.tv_unread_messages);
         }
 
         @Override

@@ -12,12 +12,19 @@ public class Message {
     private String pictureUrl;
     private String chatId;
     private boolean delivered;
-    private boolean read;
-    private String recipientId;
+    private boolean read=false;
     private String senderId;
 
     public Message(){
 
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
     }
 
     public String getPictureUrl() {

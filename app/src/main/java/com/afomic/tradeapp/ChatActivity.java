@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.Chat;
 import com.afomic.tradeapp.model.Message;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,8 +37,6 @@ public class ChatActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-
-    int count=0;
 
 
     private MessageAdapter mMessageAdapter;
@@ -59,7 +59,9 @@ public class ChatActivity extends AppCompatActivity {
 
         chatRef= FirebaseDatabase
                 .getInstance()
-                .getReference(Constants.CHATS_REF);
+                .getReference(Constants.CHATS_REF)
+                .child(currentChat.getId());
+
         messageRef=FirebaseDatabase
                 .getInstance()
                 .getReference(Constants.MESSAGES_REF)
@@ -86,13 +88,18 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Message message=dataSnapshot.getValue(Message.class);
                 mMessages.add(message);
-                int insertedPosition=mMessages.size()-1;
-                mMessageAdapter.notifyItemInserted(insertedPosition);
+                scrollToTheLastItem();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                Message message=dataSnapshot.getValue(Message.class);
+                int messagePosition=findAdById(message.getId());
+                if(messagePosition!=-1){
+                    mMessages.remove(messagePosition);
+                    mMessages.add(messagePosition,message);
+                    mMessageAdapter.notifyItemChanged(messagePosition);
+                }
             }
 
             @Override
@@ -117,25 +124,58 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(ChatActivity.this,"You cant Send empty message",
                     Toast.LENGTH_SHORT).show();
         }else {
-            String messageId=messageRef.push().getKey();
+            final String messageId=messageRef.push().getKey();
             Message message =new Message();
             message.setId(messageId);
             message.setChatId(currentChat.getId());
             message.setTime(System.currentTimeMillis());
+            message.setSenderId(mPreferenceManager.getUserId());
             message.setMessage(chatMessageEditText.getText().toString());
-            mMessages.add(message);
             chatMessageEditText.setText("");
-            chatRecyclerView.scrollToPosition(count);
-            mMessageAdapter.notifyItemInserted(count);
-            count++;
-
+            //update the message to delivered before sendding to firebase
+            messageRef.child(messageId)
+                    .setValue(message)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            messageRef.child(messageId)
+                                    .child("delivered")
+                                    .setValue(true);
+                        }
+                    });
+            chatRef.child("lastMessage").setValue(message.getMessage());
+            chatRef.child("lastUpdate").setValue(message.getTime());
         }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==android.R.id.home){
             finish();
+        }else if(item.getItemId()==R.id.menu_delete_chat) {
+            chatRef.removeValue();
+            finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void scrollToTheLastItem(){
+        int lastItemCount=mMessages.size()-1;
+        mMessageAdapter.notifyItemInserted(lastItemCount);
+        chatRecyclerView.scrollToPosition(lastItemCount);
+    }
+    public int  findAdById(String id){
+        int length=mMessages.size()-1;
+        for(int i=length;i>=0;i--){
+            Message message=mMessages.get(i);
+            if(message.getId().equals(id)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.chat_menu,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

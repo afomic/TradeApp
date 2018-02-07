@@ -89,9 +89,10 @@ public class MyAdsFragment extends Fragment {
         };
         mTradeAdsAdapter=new TradeAdsAdapter(getActivity(),mTradeAds,mTradeAdsListener);
         tradeAdsRecyclerView.setAdapter(mTradeAdsAdapter);
-        myTradeAdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        myTradeAdRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                mTradeAds.clear();
                 for(DataSnapshot snapshot:dataSnapshot.getChildren()){
                     TradeAd myAd=snapshot.getValue(TradeAd.class);
                     mTradeAds.add(myAd);

@@ -11,9 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afomic.tradeapp.R;
+import com.afomic.tradeapp.data.Constants;
+import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.Message;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,11 +31,13 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ArrayList<Message> mChats;
     private static final int MESSAGE_TYPE_SENT=101;
     private static final int MESSAGE_TYPE_RECEIVED=102;
+    private PreferenceManager mPreferenceManager;
 
 
     public MessageAdapter(Context context, ArrayList<Message> messages){
         mContext=context;
         mChats= messages;
+        mPreferenceManager=new PreferenceManager(context);
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -48,33 +53,37 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if(position%2==0){
-            return MESSAGE_TYPE_RECEIVED;
+        Message message=mChats.get(position);
+        if(mPreferenceManager.getUserId().equals(message.getSenderId())){
+            return MESSAGE_TYPE_SENT;
         }
-        return MESSAGE_TYPE_SENT;
+        return MESSAGE_TYPE_RECEIVED;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Message message =mChats.get(position);
         int viewType=getItemViewType(position);
-        String firstLetter=getSaltString();
-        TextDrawable myDrawable = TextDrawable.builder().beginConfig()
-                .textColor(Color.WHITE)
-                .useFont(Typeface.SERIF)
-                .fontSize(18)
-                .toUpperCase()
-                .endConfig()
-                .buildRound(firstLetter, ColorGenerator.MATERIAL.getRandomColor());
         if(viewType==MESSAGE_TYPE_RECEIVED){
             ReceivedViewHolder receivedViewHolder=(ReceivedViewHolder)holder;
             receivedViewHolder.receivedMessageTextView.setText(message.getMessage());
-            receivedViewHolder.senderNameImageView.setImageDrawable(myDrawable);
 
         }else {
             SentViewHolder sentViewHolder=(SentViewHolder) holder;
-            sentViewHolder.senderNameImageView.setImageDrawable(myDrawable);
             sentViewHolder.sentMessageTextView.setText(message.getMessage());
+            if(message.isDelivered()){
+                sentViewHolder.messageIndicatorImageView.setImageResource(R.drawable.ic_done_all);
+            }else {
+                sentViewHolder.messageIndicatorImageView.setImageResource(R.drawable.ic_waiting);
+            }
+        }
+        if(!message.isRead()&&!message.getSenderId().equals(mPreferenceManager.getUserId())){
+            FirebaseDatabase.getInstance()
+                    .getReference(Constants.MESSAGES_REF)
+                    .child(message.getChatId())
+                    .child(message.getId())
+                    .child("read")
+                    .setValue(true);
         }
 
     }
@@ -89,32 +98,18 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     public class SentViewHolder extends RecyclerView.ViewHolder{
         TextView sentMessageTextView;
-        ImageView senderNameImageView;
+        ImageView messageIndicatorImageView;
         public SentViewHolder(View itemView) {
             super(itemView);
             sentMessageTextView=itemView.findViewById(R.id.tv_sent_message);
-            senderNameImageView=itemView.findViewById(R.id.imv_sender_name);
+            messageIndicatorImageView=itemView.findViewById(R.id.imv_message_indicator);
         }
     }
     public class ReceivedViewHolder extends RecyclerView.ViewHolder{
         TextView receivedMessageTextView;
-        ImageView senderNameImageView;
         public ReceivedViewHolder(View itemView) {
             super(itemView);
-            senderNameImageView=itemView.findViewById(R.id.imv_sender_name);
             receivedMessageTextView=itemView.findViewById(R.id.tv_received_message);
         }
-    }
-    public static String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 2) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
     }
 }

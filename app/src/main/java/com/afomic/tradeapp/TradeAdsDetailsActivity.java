@@ -72,7 +72,7 @@ public class TradeAdsDetailsActivity extends AppCompatActivity{
     @OnClick(R.id.btn_chat)
     public void onChatUser(){
         final Chat chat=new Chat();
-        String chatId=chatRef.push().getKey();
+        String chatId=mPreferenceManager.getUsername()+currentTradeAd.getUsername();
         chat.setId(chatId);
         chat.setUserOne(mPreferenceManager.getUsername());
         chat.setUserTwo(currentTradeAd.getUsername());

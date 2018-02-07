@@ -208,6 +208,8 @@ public class HomeFragment extends Fragment {
                             if (location != null) {
                                 if(geocoder.isPresent()){
                                     Log.e("Tag", "onSuccess: is present ");
+                                    mPreferenceManager.setUserLatitude(location.getLatitude());
+                                    mPreferenceManager.setUserLongitude(location.getLongitude());
 
                                     new GeoCoderTask().execute(location);
                                 }else {

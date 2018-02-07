@@ -16,6 +16,7 @@ public class PreferenceManager {
     private static final String PREF_USER_LOCATION_LONGITUDE="longitude";
     private static final String PREF_USER_ID="user_id";
     private static final String PREF_USER_NAME="user_name";
+    private static final String PREF_USER_HAS_ACCOUNT="has_account";
 
 
 
@@ -27,14 +28,14 @@ public class PreferenceManager {
         mEditor.putString(PREF_USER_LOCATION,location);
         mEditor.apply();
     }
-    public void setUserLatitude(float latitude){
+    public void setUserLatitude(double latitude){
         SharedPreferences.Editor mEditor=mSharedPreferences.edit();
-        mEditor.putFloat(PREF_USER_LOCATION_LATITUDE,latitude);
+        mEditor.putFloat(PREF_USER_LOCATION_LATITUDE,(float) latitude);
         mEditor.apply();
     }
-    public void setUserLongitude(float longitude){
+    public void setUserLongitude(double longitude){
         SharedPreferences.Editor mEditor=mSharedPreferences.edit();
-        mEditor.putFloat(PREF_USER_LOCATION_LONGITUDE,longitude);
+        mEditor.putFloat(PREF_USER_LOCATION_LONGITUDE,(float)longitude);
         mEditor.apply();
     }
     public void setUserId(String userId){
