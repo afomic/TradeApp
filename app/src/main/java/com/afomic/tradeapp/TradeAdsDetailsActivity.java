@@ -15,6 +15,7 @@ import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.Chat;
 import com.afomic.tradeapp.model.TradeAd;
+import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -54,7 +55,8 @@ public class TradeAdsDetailsActivity extends AppCompatActivity{
 
         currentTradeAd=getIntent().getParcelableExtra(Constants.EXTRA_TRADE_AD);
 
-        chatRef= FirebaseDatabase.getInstance().getReference(Constants.CHATS_REF);
+        chatRef= FirebaseDatabase.getInstance()
+                .getReference(Constants.CHATS_REF);
 
         setSupportActionBar(mToolbar);
         mPreferenceManager=new PreferenceManager(this);
@@ -72,12 +74,17 @@ public class TradeAdsDetailsActivity extends AppCompatActivity{
     @OnClick(R.id.btn_chat)
     public void onChatUser(){
         final Chat chat=new Chat();
-        String chatId=mPreferenceManager.getUsername()+currentTradeAd.getUsername();
+        String chatId=mPreferenceManager.getUserId()+currentTradeAd.getUserId();
         chat.setId(chatId);
         chat.setUserOne(mPreferenceManager.getUsername());
         chat.setUserTwo(currentTradeAd.getUsername());
+        chat.setColor(ColorGenerator.MATERIAL.getRandomColor());
         chat.setLastUpdate(System.currentTimeMillis());
-        chatRef.child(chatId)
+        DatabaseReference myChatRef=chatRef.child(mPreferenceManager.getUsername());
+        DatabaseReference recipientChatRef=chatRef.child(currentTradeAd.getUsername());
+        recipientChatRef.child(chatId)
+                .setValue(chat);
+        myChatRef.child(chatId)
                 .setValue(chat)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

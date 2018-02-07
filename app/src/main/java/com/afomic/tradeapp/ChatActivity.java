@@ -1,11 +1,13 @@
 package com.afomic.tradeapp;
 
+import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -43,8 +45,9 @@ public class ChatActivity extends AppCompatActivity {
     private ArrayList<Message> mMessages;
     private PreferenceManager mPreferenceManager;
     private Chat currentChat;
+    private String recipientUsername;
 
-    private DatabaseReference chatRef,messageRef;
+    private DatabaseReference chatRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,20 +63,17 @@ public class ChatActivity extends AppCompatActivity {
         chatRef= FirebaseDatabase
                 .getInstance()
                 .getReference(Constants.CHATS_REF)
+                .child(mPreferenceManager.getUsername())
                 .child(currentChat.getId());
 
-        messageRef=FirebaseDatabase
-                .getInstance()
-                .getReference(Constants.MESSAGES_REF)
-                .child(currentChat.getId());
 
 
         ActionBar actionBar=getSupportActionBar();
         String myUsername=mPreferenceManager.getUsername();
-        String recipient=currentChat.getUserTwo().equals(myUsername)?currentChat.getUserOne():currentChat.getUserTwo();
+        recipientUsername=currentChat.getUserTwo().equals(myUsername)?currentChat.getUserOne():currentChat.getUserTwo();
 
         if(actionBar!=null){
-            actionBar.setTitle(recipient);
+            actionBar.setTitle(recipientUsername);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -83,10 +83,12 @@ public class ChatActivity extends AppCompatActivity {
         mMessageAdapter =new MessageAdapter(ChatActivity.this, mMessages);
         chatRecyclerView.setAdapter(mMessageAdapter);
 
-        messageRef.addChildEventListener(new ChildEventListener() {
+        chatRef.child(Constants.MESSAGES_REF)
+                .addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Message message=dataSnapshot.getValue(Message.class);
+
                 mMessages.add(message);
                 scrollToTheLastItem();
             }
@@ -124,7 +126,14 @@ public class ChatActivity extends AppCompatActivity {
             Toast.makeText(ChatActivity.this,"You cant Send empty message",
                     Toast.LENGTH_SHORT).show();
         }else {
-            final String messageId=messageRef.push().getKey();
+            final DatabaseReference userMessageRef=chatRef.child(Constants.MESSAGES_REF);
+            DatabaseReference recipientChatRef=FirebaseDatabase.getInstance()
+                    .getReference(Constants.CHATS_REF)
+                    .child(recipientUsername)
+                    .child(currentChat.getId());
+            DatabaseReference recipientMessageRef=recipientChatRef
+                    .child(Constants.MESSAGES_REF);
+            final String messageId=userMessageRef.push().getKey();
             Message message =new Message();
             message.setId(messageId);
             message.setChatId(currentChat.getId());
@@ -132,19 +141,23 @@ public class ChatActivity extends AppCompatActivity {
             message.setSenderId(mPreferenceManager.getUserId());
             message.setMessage(chatMessageEditText.getText().toString());
             chatMessageEditText.setText("");
-            //update the message to delivered before sendding to firebase
-            messageRef.child(messageId)
+            //update the message to delivered before sending to firebase
+            userMessageRef.child(messageId)
                     .setValue(message)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            messageRef.child(messageId)
+                            userMessageRef.child(messageId)
                                     .child("delivered")
                                     .setValue(true);
                         }
                     });
+            recipientMessageRef.child(messageId)
+                    .setValue(message);
             chatRef.child("lastMessage").setValue(message.getMessage());
             chatRef.child("lastUpdate").setValue(message.getTime());
+            recipientChatRef.child("lastMessage").setValue(message.getMessage());
+            recipientChatRef.child("lastUpdate").setValue(message.getTime());
         }
     }
     @Override

@@ -136,6 +136,7 @@
                 android:padding="@dimen/dimen_8"
                 android:text="Lagos"
                 android:textSize="16sp"
+                android:id="@+id/tv_user_location"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

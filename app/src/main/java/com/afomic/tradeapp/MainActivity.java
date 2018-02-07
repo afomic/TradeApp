@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
+import com.afomic.tradeapp.fragment.AddAccountDialog;
 import com.afomic.tradeapp.fragment.ChatListFragment;
 import com.afomic.tradeapp.fragment.HomeFragment;
 import com.afomic.tradeapp.fragment.MyAdsFragment;
@@ -129,26 +130,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void loginUser(){
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            FirebaseUser user=task.getResult().getUser();
-                            User currentUser=new User();
-                            String userId=user.getUid();
-                            currentUser.setUserId(userId);
-                            currentUser.setUsername("Anonymous");
-                            mPreferenceManager.setUserId(userId);
-                            mPreferenceManager.setUsername("Anonymous");
-                            currentUser.setMemberSince(System.currentTimeMillis());
-                            userDatabaseRef.child(userId)
-                                    .setValue(currentUser);
-                        }
+        AddAccountDialog dialog=AddAccountDialog.newInstance();
+        dialog.show(getSupportFragmentManager(),"");
 
-
-                    }
-                });
     }
 
     @Override

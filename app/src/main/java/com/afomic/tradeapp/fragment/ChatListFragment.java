@@ -44,6 +44,7 @@ public class ChatListFragment extends Fragment {
     private ArrayList<Chat> mChats;
 
     private Unbinder mUnbinder;
+    private PreferenceManager mPreferenceManager;
     public static ChatListFragment newInstance(){
         return new ChatListFragment();
     }
@@ -51,7 +52,10 @@ public class ChatListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        chatRef= FirebaseDatabase.getInstance().getReference(Constants.CHATS_REF);
+        mPreferenceManager=new PreferenceManager(getActivity());
+        chatRef= FirebaseDatabase.getInstance()
+                .getReference(Constants.CHATS_REF)
+                .child(mPreferenceManager.getUsername());
         mChats=new ArrayList<>();
 
     }
@@ -65,24 +69,21 @@ public class ChatListFragment extends Fragment {
         chatRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL));
         mChatAdapter=new ChatAdapter(getActivity(),mChats);
         chatRecyclerView.setAdapter(mChatAdapter);
-        chatRef.orderByChild("lastUpdate")
-        .addChildEventListener(new ChildEventListener() {
+        chatRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Chat chat=dataSnapshot.getValue(Chat.class);
                 mChats.add(0,chat);
                 mChatAdapter.notifyItemInserted(0);
-
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Chat chat=dataSnapshot.getValue(Chat.class);
                 int position=findAdById(chat.getId());
-
                 if(position!=-1){
                     mChats.remove(position);
-                    mChats.add(position,chat);
+                    mChats.add(0,chat);
                     mChatAdapter.notifyItemChanged(position);
                 }
             }
@@ -93,7 +94,7 @@ public class ChatListFragment extends Fragment {
                 int position=findAdById(chat.getId());
                 if(position!=-1){
                     mChats.remove(position);
-                    mChatAdapter.notifyItemRemoved(position);
+                    mChatAdapter.notifyDataSetChanged();
                 }
             }
 

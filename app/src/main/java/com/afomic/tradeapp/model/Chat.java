@@ -3,6 +3,8 @@ package com.afomic.tradeapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.amulyakhare.textdrawable.util.ColorGenerator;
+
 /**
  * Created by afomic on 1/24/18.
  */
@@ -13,9 +15,9 @@ public class Chat implements Parcelable{
     private String  id;
     private String lastMessage;
     private long lastUpdate;
+    private int color;
 
     public Chat(){
-
     }
 
     protected Chat(Parcel in) {
@@ -24,6 +26,7 @@ public class Chat implements Parcelable{
         id = in.readString();
         lastMessage = in.readString();
         lastUpdate = in.readLong();
+        color = in.readInt();
     }
 
     public static final Creator<Chat> CREATOR = new Creator<Chat>() {
@@ -38,6 +41,14 @@ public class Chat implements Parcelable{
         }
     };
 
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -50,6 +61,7 @@ public class Chat implements Parcelable{
         dest.writeString(id);
         dest.writeString(lastMessage);
         dest.writeLong(lastUpdate);
+        dest.writeInt(color);
     }
 
     public String getUserOne() {

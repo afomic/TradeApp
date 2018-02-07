@@ -79,8 +79,10 @@ public class MessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
         if(!message.isRead()&&!message.getSenderId().equals(mPreferenceManager.getUserId())){
             FirebaseDatabase.getInstance()
-                    .getReference(Constants.MESSAGES_REF)
+                    .getReference(Constants.CHATS_REF)
+                    .child(mPreferenceManager.getUsername())
                     .child(message.getChatId())
+                    .child(Constants.MESSAGES_REF)
                     .child(message.getId())
                     .child("read")
                     .setValue(true);

@@ -2,10 +2,14 @@ package com.afomic.tradeapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afomic.tradeapp.ChatActivity;
@@ -15,6 +19,7 @@ import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.Chat;
 import com.afomic.tradeapp.model.Message;
 import com.afomic.tradeapp.util.DateUtil;
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -54,12 +59,24 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
         }else {
             holder.recipientTextView.setText(chatItem.getUserOne());
         }
+        String firstLetter=String.valueOf(username.charAt(0)).toUpperCase();
+        TextDrawable myDrawable = TextDrawable.builder().beginConfig()
+                .textColor(Color.WHITE)
+                .useFont(Typeface.DEFAULT)
+                .toUpperCase()
+                .endConfig()
+                .buildRound(firstLetter,chatItem.getColor());
+        holder.recipientInitial.setImageDrawable(myDrawable);
         holder.lastMessageTextView.setText(chatItem.getLastMessage());
         String lastUpdateTime= DateUtil.formatDate(chatItem.getLastUpdate());
         holder.lastUpdateTextView.setText(lastUpdateTime);
+        Log.e("tag", "Redrawn: " );
+
         FirebaseDatabase.getInstance()
-                .getReference(Constants.MESSAGES_REF)
+                .getReference(Constants.CHATS_REF)
+                .child(mPreferenceManager.getUsername())
                 .child(chatItem.getId())
+                .child(Constants.MESSAGES_REF)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -73,6 +90,7 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
                         }
                         if(count>0){
                             holder.unreadMentionTextView.setText(String.valueOf(count));
+                            holder.unreadMentionTextView.setVisibility(View.VISIBLE);
                         }else {
                             holder.unreadMentionTextView.setVisibility(View.GONE);
                         }
@@ -97,6 +115,7 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
 
     public class ChatHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView recipientTextView, lastMessageTextView,lastUpdateTextView,unreadMentionTextView;
+        ImageView recipientInitial;
         public ChatHolder(View itemView) {
             super(itemView);
              itemView.setOnClickListener(this);
@@ -104,6 +123,7 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
              lastMessageTextView=itemView.findViewById(R.id.tv_last_message);
              lastUpdateTextView=itemView.findViewById(R.id.tv_last_update);
              unreadMentionTextView=itemView.findViewById(R.id.tv_unread_messages);
+             recipientInitial=itemView.findViewById(R.id.imv_recipient_initials);
         }
 
         @Override

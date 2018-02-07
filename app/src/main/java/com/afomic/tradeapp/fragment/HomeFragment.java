@@ -108,9 +108,15 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(int position) {
                 TradeAd tradeAd=mTradeAds.get(position);
-                Intent intent=new Intent(getActivity(),TradeAdsDetailsActivity.class);
-                intent.putExtra(Constants.EXTRA_TRADE_AD,tradeAd);
-                startActivity(intent);
+                if(tradeAd.getUserId().equals(mPreferenceManager.getUserId())){
+                    Intent intent=new Intent(getActivity(),CreateTradeAdActivity.class);
+                    startActivity(intent);
+                }else {
+                    Intent intent=new Intent(getActivity(),TradeAdsDetailsActivity.class);
+                    intent.putExtra(Constants.EXTRA_TRADE_AD,tradeAd);
+                    startActivity(intent);
+                }
+
             }
         };
         mTradeAdsAdapter=new TradeAdsAdapter(getActivity(),mTradeAds,mTradeAdsListener);

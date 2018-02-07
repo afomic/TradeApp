@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
@@ -27,6 +28,8 @@ import butterknife.OnClick;
 public class CreateTradeAdActivity extends AppCompatActivity {
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.tv_user_location)
+    TextView userLocation;
     @BindView(R.id.ch_offer_btc)
     CheckBox btcOfferCheckBox;
     @BindView(R.id.ch_offer_dcr)
@@ -70,6 +73,8 @@ public class CreateTradeAdActivity extends AppCompatActivity {
         btcTakingCheckBox.setOnCheckedChangeListener(new CheckboxListener("BTC",TYPE_TAKING));
         dcrTakingCheckBox.setOnCheckedChangeListener(new CheckboxListener("DCR",TYPE_TAKING));
         cashTakingCheckBox.setOnCheckedChangeListener(new CheckboxListener("Cash",TYPE_TAKING));
+
+        userLocation.setText(mPreferenceManager.getUserLocation());
 
 
     }
