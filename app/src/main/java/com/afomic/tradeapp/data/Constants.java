@@ -13,4 +13,5 @@ public class Constants {
     public static final String EXTRA_TRADE_AD="trade_ad";
     public static final String EXTRA_TRADE_LONGITUDE="trade_longitude";
     public static final String EXTRA_TRADE_LATITUDE="trade_latitude";
+    public static final String LOG_TAG="trade_app";
 }

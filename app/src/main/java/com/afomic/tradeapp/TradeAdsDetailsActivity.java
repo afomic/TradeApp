@@ -1,6 +1,7 @@
 package com.afomic.tradeapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
+import com.afomic.tradeapp.fragment.AddAccountDialog;
 import com.afomic.tradeapp.model.Chat;
 import com.afomic.tradeapp.model.TradeAd;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -31,7 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TradeAdsDetailsActivity extends AppCompatActivity{
+public class TradeAdsDetailsActivity extends BaseActivity{
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_last_seen)
@@ -73,6 +75,11 @@ public class TradeAdsDetailsActivity extends AppCompatActivity{
     }
     @OnClick(R.id.btn_chat)
     public void onChatUser(){
+        if(!mPreferenceManager.isUserLoggedIn()){
+            AddAccountDialog dialog=AddAccountDialog.newInstance();
+            dialog.show(getSupportFragmentManager(),null);
+            return;
+        }
         final Chat chat=new Chat();
         String chatId=mPreferenceManager.getUserId()+currentTradeAd.getUserId();
         chat.setId(chatId);

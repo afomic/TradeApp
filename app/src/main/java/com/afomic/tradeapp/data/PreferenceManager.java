@@ -48,6 +48,14 @@ public class PreferenceManager {
         mEditor.putString(PREF_USER_NAME,username);
         mEditor.apply();
     }
+    public void setUserLogin(boolean isLogin){
+        SharedPreferences.Editor mEditor=mSharedPreferences.edit();
+        mEditor.putBoolean(PREF_USER_HAS_ACCOUNT,isLogin);
+        mEditor.apply();
+    }
+    public boolean isUserLoggedIn(){
+        return mSharedPreferences.getBoolean(PREF_USER_HAS_ACCOUNT,false);
+    }
     public float getUserLongitude(){
         return mSharedPreferences.getFloat(PREF_USER_LOCATION_LONGITUDE,0);
     }

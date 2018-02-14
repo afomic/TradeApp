@@ -1,6 +1,7 @@
 package com.afomic.tradeapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -25,7 +26,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CreateTradeAdActivity extends AppCompatActivity {
+public class CreateTradeAdActivity extends BaseActivity {
+
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_user_location)
@@ -144,18 +146,20 @@ public class CreateTradeAdActivity extends AppCompatActivity {
             String nameWithComma=name+", ";
             if(isChecked){
                 if(type==TYPE_OFFER){
-                  offerCurrencyString+=nameWithComma;
+                    offerCurrencyString+=nameWithComma;
                 }else {
                     takingCurrencyString+=nameWithComma;
                 }
             }else {
                 if(type==TYPE_OFFER){
                     offerCurrencyString=removeString(offerCurrencyString,nameWithComma);
+
                 }else {
                     takingCurrencyString = removeString(takingCurrencyString,nameWithComma);
                 }
-
             }
+            Log.e(Constants.LOG_TAG, "onCheckedChanged: offerCurrency "+offerCurrencyString );
+            Log.e(Constants.LOG_TAG, "onCheckedChanged: takingCurrency "+ takingCurrencyString);
         }
     }
     public static String removeString(String container,String text){

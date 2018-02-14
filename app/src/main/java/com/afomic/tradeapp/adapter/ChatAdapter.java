@@ -53,13 +53,16 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
     @Override
     public void onBindViewHolder(final ChatHolder holder, int position) {
         Chat chatItem=mChats.get(position);
+        String firstLetter;
         // if i am user one then the person am chating with is userTwo
         if(chatItem.getUserOne().equals(username)){
             holder.recipientTextView.setText(chatItem.getUserTwo());
+            firstLetter=String.valueOf(chatItem.getUserTwo().charAt(0)).toUpperCase();
         }else {
             holder.recipientTextView.setText(chatItem.getUserOne());
+            firstLetter=String.valueOf(chatItem.getUserOne().charAt(0)).toUpperCase();
         }
-        String firstLetter=String.valueOf(username.charAt(0)).toUpperCase();
+
         TextDrawable myDrawable = TextDrawable.builder().beginConfig()
                 .textColor(Color.WHITE)
                 .useFont(Typeface.DEFAULT)

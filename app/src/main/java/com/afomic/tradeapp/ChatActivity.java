@@ -1,5 +1,6 @@
 package com.afomic.tradeapp;
 
+import android.content.SharedPreferences;
 import android.provider.SyncStateContract;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseActivity {
     @BindView(R.id.rv_chats)
     RecyclerView chatRecyclerView;
     @BindView(R.id.edt_chat_message)

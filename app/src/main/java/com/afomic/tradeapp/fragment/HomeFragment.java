@@ -12,6 +12,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -51,6 +53,7 @@ import butterknife.Unbinder;
 
 /**
  * Created by afomic on 1/23/18.
+ *
  */
 
 public class HomeFragment extends Fragment {
@@ -121,6 +124,11 @@ public class HomeFragment extends Fragment {
         };
         mTradeAdsAdapter=new TradeAdsAdapter(getActivity(),mTradeAds,mTradeAdsListener);
         tradeAdsRecyclerView.setAdapter(mTradeAdsAdapter);
+        DividerItemDecoration divider = new DividerItemDecoration(
+               getActivity(),
+                DividerItemDecoration.VERTICAL
+        );
+        tradeAdsRecyclerView.addItemDecoration(divider);
         userLocationTextView.setText(mPreferenceManager.getUserLocation());
 
 

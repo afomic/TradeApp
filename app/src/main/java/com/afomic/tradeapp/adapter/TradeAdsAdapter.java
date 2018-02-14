@@ -13,6 +13,7 @@ import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.TradeAd;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by afomic on 1/7/18.
@@ -43,8 +44,8 @@ public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeA
         holder.usernameTextView.setText(ad.getUsername());
         holder.offerTextView.setText(ad.getCurrencyToSell());
         holder.takingTextView.setText(ad.getCurrencyToBuy());
-        float distanceBtwTrade=getLocationDifference(ad);
-        holder.distanceTextView.setText(String.valueOf(distanceBtwTrade));
+        float distanceBtwTrade=getLocationDifference(ad)/1000;
+        holder.distanceTextView.setText(String.format(Locale.ENGLISH,"%.2f Km",distanceBtwTrade));
     }
 
     @Override

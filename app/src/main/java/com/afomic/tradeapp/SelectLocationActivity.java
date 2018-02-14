@@ -1,5 +1,6 @@
 package com.afomic.tradeapp;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SelectLocationActivity extends AppCompatActivity {
+public class SelectLocationActivity extends BaseActivity {
     @BindView(R.id.edt_user_location)
     EditText userLocationEditText;
     @BindView(R.id.toolbar)

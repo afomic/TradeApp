@@ -64,28 +64,15 @@ public class AddAccountDialog extends DialogFragment {
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                final String username=usernameEditText.getText().toString().trim();
+                String username=usernameEditText.getText().toString().trim();
                 if(!username.equals("")){
-                    mAuth.signInAnonymously()
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(task.isSuccessful()){
-                                        FirebaseUser user=task.getResult().getUser();
-                                        User currentUser=new User();
-                                        String userId=user.getUid();
-                                        currentUser.setUserId(userId);
-                                        currentUser.setUsername(username);
-                                        mPreferenceManager.setUserId(userId);
-                                        mPreferenceManager.setUsername(username);
-                                        currentUser.setMemberSince(System.currentTimeMillis());
-                                        userDatabaseRef.child(userId)
-                                                .setValue(currentUser);
-                                    }
-
-
-                                }
-                            });
+                    FirebaseDatabase.getInstance()
+                            .getReference(Constants.USERS_REF)
+                            .child(mPreferenceManager.getUserId())
+                            .child("username")
+                            .setValue(username);
+                    mPreferenceManager.setUsername(username);
+                    mPreferenceManager.setUserLogin(true);
                 }
             }
         });

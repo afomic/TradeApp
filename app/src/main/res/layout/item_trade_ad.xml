@@ -1,79 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="8dp"
+    android:padding="8dp"
+    android:orientation="vertical"
     android:layout_height="wrap_content">
     <LinearLayout
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_8"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:padding="@dimen/dimen_8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="0dp"
-                android:text="Afomic"
-                android:textSize="16sp"
-                android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:id="@+id/tv_username"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/tv_last_seen"
-                android:text="Last seen: 17 days ago"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
+        <TextView
+            android:layout_width="0dp"
+            android:text="Afomic"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:id="@+id/tv_username"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/tv_last_seen"
+            android:text="Last seen: 17 days ago"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:padding="@dimen/dimen_8"
-                android:text="Offer:"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:text="BTC , DCR, CASH"
-                android:padding="@dimen/dimen_8"
-                android:id="@+id/tv_offer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:padding="@dimen/dimen_8"
-                android:text="Taking:"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:text="BTC, CASH"
-                android:padding="@dimen/dimen_8"
-                android:id="@+id/tv_taking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:gravity="right"
-                android:text="4 km away"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                android:padding="@dimen/dimen_8"
-                android:id="@+id/tv_distance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
+            android:layout_height="wrap_content"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:padding="@dimen/dimen_8"
+            android:text="Offer:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="BTC , DCR, CASH"
+            android:padding="@dimen/dimen_8"
+            android:id="@+id/tv_offer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-</android.support.v7.widget.CardView>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:padding="@dimen/dimen_8"
+            android:text="Taking:"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="BTC, CASH"
+            android:padding="@dimen/dimen_8"
+            android:id="@+id/tv_taking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:gravity="right"
+            android:text="4 km away"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:padding="@dimen/dimen_8"
+            android:id="@+id/tv_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</LinearLayout>

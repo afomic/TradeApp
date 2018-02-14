@@ -1,6 +1,7 @@
 package com.afomic.tradeapp.model;
 
 /**
+ *
  * Created by afomic on 2/3/18.
  */
 

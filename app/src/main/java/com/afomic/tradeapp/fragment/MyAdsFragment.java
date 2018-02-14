@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -87,6 +89,11 @@ public class MyAdsFragment extends Fragment {
                 startActivity(intent);
             }
         };
+        DividerItemDecoration divider = new DividerItemDecoration(
+                getActivity(),
+                DividerItemDecoration.VERTICAL
+        );
+        tradeAdsRecyclerView.addItemDecoration(divider);
         mTradeAdsAdapter=new TradeAdsAdapter(getActivity(),mTradeAds,mTradeAdsListener);
         tradeAdsRecyclerView.setAdapter(mTradeAdsAdapter);
         myTradeAdRef.addValueEventListener(new ValueEventListener() {
@@ -117,8 +124,14 @@ public class MyAdsFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.menu_create_ad){
-            Intent intent=new Intent(getActivity(), CreateTradeAdActivity.class);
-            startActivity(intent);
+            if(mPreferenceManager.isUserLoggedIn()){
+                Intent intent=new Intent(getActivity(), CreateTradeAdActivity.class);
+                startActivity(intent);
+            }else {
+                AddAccountDialog dialog=AddAccountDialog.newInstance();
+                dialog.show(getFragmentManager(),null);
+            }
+
         }
         return super.onOptionsItemSelected(item);
     }
