@@ -13,6 +13,7 @@
         app:cardCornerRadius="4dp"
         android:layout_marginRight="8dp"
         android:layout_marginLeft="8dp"
+
         android:layout_gravity="bottom"
         android:layout_height="wrap_content">
 
@@ -20,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#d2b1f7c5"
+            android:id="@+id/message_layout"
             android:orientation="horizontal">
 
             <TextView

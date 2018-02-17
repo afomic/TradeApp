@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.afomic.tradeapp.adapter.MessageAdapter;
@@ -39,6 +41,10 @@ public class ChatActivity extends BaseActivity {
     EditText chatMessageEditText;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.fab_send)
+    ImageView sendButton;
+    @BindView(R.id.input_layout)
+    LinearLayout inputLayout;
 
 
 
@@ -48,7 +54,7 @@ public class ChatActivity extends BaseActivity {
     private Chat currentChat;
     private String recipientUsername;
 
-    private DatabaseReference chatRef;
+    private DatabaseReference chatRef,messageRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,11 @@ public class ChatActivity extends BaseActivity {
         
         currentChat=getIntent().getParcelableExtra(Constants.EXTRA_CHAT);
 
+        if(darkTheme){
+            inputLayout.setBackgroundColor(getResources().getColor(R.color.colorBlackBackground));
+            sendButton.setImageResource(R.drawable.ic_send_white);
+        }
+
         setSupportActionBar(mToolbar);
         mPreferenceManager=new PreferenceManager(this);
 
@@ -65,6 +76,9 @@ public class ChatActivity extends BaseActivity {
                 .getInstance()
                 .getReference(Constants.CHATS_REF)
                 .child(mPreferenceManager.getUsername())
+                .child(currentChat.getId());
+        messageRef=FirebaseDatabase.getInstance()
+                .getReference(Constants.MESSAGES_REF)
                 .child(currentChat.getId());
 
 
@@ -81,15 +95,13 @@ public class ChatActivity extends BaseActivity {
 
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mMessages =new ArrayList<>();
-        mMessageAdapter =new MessageAdapter(ChatActivity.this, mMessages);
+        mMessageAdapter =new MessageAdapter(ChatActivity.this, mMessages,darkTheme);
         chatRecyclerView.setAdapter(mMessageAdapter);
 
-        chatRef.child(Constants.MESSAGES_REF)
-                .addChildEventListener(new ChildEventListener() {
+        messageRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Message message=dataSnapshot.getValue(Message.class);
-
                 mMessages.add(message);
                 scrollToTheLastItem();
             }
@@ -127,14 +139,11 @@ public class ChatActivity extends BaseActivity {
             Toast.makeText(ChatActivity.this,"You cant Send empty message",
                     Toast.LENGTH_SHORT).show();
         }else {
-            final DatabaseReference userMessageRef=chatRef.child(Constants.MESSAGES_REF);
             DatabaseReference recipientChatRef=FirebaseDatabase.getInstance()
                     .getReference(Constants.CHATS_REF)
                     .child(recipientUsername)
                     .child(currentChat.getId());
-            DatabaseReference recipientMessageRef=recipientChatRef
-                    .child(Constants.MESSAGES_REF);
-            final String messageId=userMessageRef.push().getKey();
+            final String messageId=messageRef.push().getKey();
             Message message =new Message();
             message.setId(messageId);
             message.setChatId(currentChat.getId());
@@ -143,18 +152,16 @@ public class ChatActivity extends BaseActivity {
             message.setMessage(chatMessageEditText.getText().toString());
             chatMessageEditText.setText("");
             //update the message to delivered before sending to firebase
-            userMessageRef.child(messageId)
+            messageRef.child(messageId)
                     .setValue(message)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            userMessageRef.child(messageId)
+                            messageRef.child(messageId)
                                     .child("delivered")
                                     .setValue(true);
                         }
                     });
-            recipientMessageRef.child(messageId)
-                    .setValue(message);
             chatRef.child("lastMessage").setValue(message.getMessage());
             chatRef.child("lastUpdate").setValue(message.getTime());
             recipientChatRef.child("lastMessage").setValue(message.getMessage());

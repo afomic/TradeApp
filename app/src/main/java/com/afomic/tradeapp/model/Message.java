@@ -1,11 +1,14 @@
 package com.afomic.tradeapp.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  *
  * Created by afomic on 1/19/18.
  */
 
-public class Message {
+public class Message  implements Parcelable{
     private String message;
     private String id;
     private long time;
@@ -17,6 +20,46 @@ public class Message {
 
     public Message(){
 
+    }
+
+    protected Message(Parcel in) {
+        message = in.readString();
+        id = in.readString();
+        time = in.readLong();
+        pictureUrl = in.readString();
+        chatId = in.readString();
+        delivered = in.readByte() != 0;
+        read = in.readByte() != 0;
+        senderId = in.readString();
+    }
+
+    public static final Creator<Message> CREATOR = new Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(message);
+        dest.writeString(id);
+        dest.writeLong(time);
+        dest.writeString(pictureUrl);
+        dest.writeString(chatId);
+        dest.writeByte((byte) (delivered ? 1 : 0));
+        dest.writeByte((byte) (read ? 1 : 0));
+        dest.writeString(senderId);
     }
 
     public String getSenderId() {

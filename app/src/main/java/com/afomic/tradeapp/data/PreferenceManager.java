@@ -69,7 +69,7 @@ public class PreferenceManager {
         return mSharedPreferences.getString(PREF_USER_ID,"");
     }
     public String getUsername(){
-        return mSharedPreferences.getString(PREF_USER_NAME,"");
+        return mSharedPreferences.getString(PREF_USER_NAME,"anonymous");
     }
 
 }

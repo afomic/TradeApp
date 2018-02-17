@@ -1,5 +1,6 @@
 package com.afomic.tradeapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -51,6 +52,7 @@ public class CreateTradeAdActivity extends BaseActivity {
     private static String takingCurrencyString="";
     private PreferenceManager mPreferenceManager;
     private DatabaseReference tradeAdsRef;
+    private ProgressDialog mProgressDialog;
 
 
     @Override
@@ -78,11 +80,16 @@ public class CreateTradeAdActivity extends BaseActivity {
 
         userLocation.setText(mPreferenceManager.getUserLocation());
 
+        mProgressDialog=new ProgressDialog(getApplication());
+        mProgressDialog.setMessage("Creating Trade Ad....");
+        mProgressDialog.setCancelable(false);
+
 
     }
     @OnClick(R.id.btn_submit)
     public void submitTradeAd(){
         if(isValidEntry()){
+            mProgressDialog.show();
             String tradeAdId=tradeAdsRef.push().getKey();
             TradeAd ads=new TradeAd();
             ads.setCurrencyToBuy(trimSelection(takingCurrencyString));
@@ -97,11 +104,18 @@ public class CreateTradeAdActivity extends BaseActivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            if(mProgressDialog!=null){
+                                mProgressDialog.dismiss();
+                            }
                             finish();
+
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    if(mProgressDialog!=null){
+                        mProgressDialog.dismiss();
+                    }
                     Util.makeToast(CreateTradeAdActivity.this,"Creating Post Failed");
                     Log.e("tag", "onFailure: ",e );
                 }

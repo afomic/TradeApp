@@ -1,5 +1,6 @@
 package com.afomic.tradeapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -17,6 +18,7 @@ import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.fragment.AddAccountDialog;
 import com.afomic.tradeapp.model.Chat;
 import com.afomic.tradeapp.model.TradeAd;
+import com.afomic.tradeapp.services.FirebaseChatListener;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,7 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TradeAdsDetailsActivity extends BaseActivity{
+public class TradeAdsDetailsActivity extends BaseActivity implements AddAccountDialog.AddAccountListener{
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.tv_last_seen)
@@ -47,6 +49,7 @@ public class TradeAdsDetailsActivity extends BaseActivity{
 
     private PreferenceManager mPreferenceManager;
     private TradeAd currentTradeAd;
+    private ProgressDialog mProgressDialog;
 
     private DatabaseReference chatRef;
     @Override
@@ -72,6 +75,10 @@ public class TradeAdsDetailsActivity extends BaseActivity{
         usernameTextView.setText(currentTradeAd.getUsername());
         takesTextView.setText(currentTradeAd.getCurrencyToBuy());
         offersTextView.setText(currentTradeAd.getCurrencyToSell());
+
+        mProgressDialog=new ProgressDialog(this);
+        mProgressDialog.setMessage("initializing chat");
+        mProgressDialog.setCancelable(false);
     }
     @OnClick(R.id.btn_chat)
     public void onChatUser(){
@@ -80,32 +87,8 @@ public class TradeAdsDetailsActivity extends BaseActivity{
             dialog.show(getSupportFragmentManager(),null);
             return;
         }
-        final Chat chat=new Chat();
-        String chatId=mPreferenceManager.getUserId()+currentTradeAd.getUserId();
-        chat.setId(chatId);
-        chat.setUserOne(mPreferenceManager.getUsername());
-        chat.setUserTwo(currentTradeAd.getUsername());
-        chat.setColor(ColorGenerator.MATERIAL.getRandomColor());
-        chat.setLastUpdate(System.currentTimeMillis());
-        DatabaseReference myChatRef=chatRef.child(mPreferenceManager.getUsername());
-        DatabaseReference recipientChatRef=chatRef.child(currentTradeAd.getUsername());
-        recipientChatRef.child(chatId)
-                .setValue(chat);
-        myChatRef.child(chatId)
-                .setValue(chat)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Intent intent=new Intent(getApplicationContext(),ChatActivity.class);
-                        intent.putExtra(Constants.EXTRA_CHAT,chat);
-                        startActivity(intent);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("tag", "onFailure: ", e);
-            }
-        });
+        startChat();
+
 
     }
     @OnClick(R.id.btn_locate)
@@ -123,4 +106,41 @@ public class TradeAdsDetailsActivity extends BaseActivity{
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onAddAccount(String username) {
+        Intent intent=new Intent(getApplicationContext(),FirebaseChatListener.class);
+        startService(intent);
+        startChat();
+    }
+    public void startChat(){
+        final Chat chat=new Chat();
+        mProgressDialog.show();
+        String chatId=mPreferenceManager.getUserId()+currentTradeAd.getUserId();
+        chat.setId(chatId);
+        chat.setUserOne(mPreferenceManager.getUsername());
+        chat.setUserTwo(currentTradeAd.getUsername());
+        chat.setColor(ColorGenerator.MATERIAL.getRandomColor());
+        chat.setLastUpdate(System.currentTimeMillis());
+        final DatabaseReference myChatRef=chatRef.child(mPreferenceManager.getUsername());
+        DatabaseReference recipientChatRef=chatRef.child(currentTradeAd.getUsername());
+        recipientChatRef.child(chatId)
+                .setValue(chat);
+        myChatRef.child(chatId)
+                .setValue(chat)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        mProgressDialog.dismiss();
+                        Intent intent=new Intent(getApplicationContext(),ChatActivity.class);
+                        intent.putExtra(Constants.EXTRA_CHAT,chat);
+                        startActivity(intent);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                mProgressDialog.dismiss();
+                Log.e("tag", "onFailure: ", e);
+            }
+        });
+    }
 }

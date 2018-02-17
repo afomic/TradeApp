@@ -43,6 +43,7 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
         mContext=context;
         mPreferenceManager=new PreferenceManager(context);
         username=mPreferenceManager.getUsername();
+
     }
     @Override
     public ChatHolder onCreateViewHolder(ViewGroup parent, int viewType) {

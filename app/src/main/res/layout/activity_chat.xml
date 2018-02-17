@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#d8d6d6"
     android:orientation="vertical"
     tools:context="com.afomic.tradeapp.ChatActivity">
     <android.support.design.widget.AppBarLayout
@@ -27,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:id="@+id/input_layout"
         android:background="@color/colorWhite"
         android:orientation="horizontal">
 
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/edt_chat_message"
             android:layout_weight="1"
-            android:background="@color/colorWhite"
+            android:background="@android:color/transparent"
             android:hint="Type message"
             android:inputType="textCapSentences|textMultiLine"
             android:paddingTop="8dp"
@@ -43,19 +43,13 @@
             android:paddingLeft="16dp"
             android:paddingBottom="9dp"/>
 
-        <android.support.design.widget.FloatingActionButton
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="4dp"
-            app:elevation="0dp"
-            android:background="@color/colorWhite"
-            app:backgroundTint="@color/colorWhite"
-            android:layout_marginBottom="4dp"
+            android:padding="@dimen/dimen_8"
             android:id="@+id/fab_send"
-            android:src="@drawable/ic_send"
-            app:fabSize="mini"/>
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_send"/>
     </LinearLayout>
 
 </LinearLayout>

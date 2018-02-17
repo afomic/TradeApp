@@ -3,6 +3,7 @@ package com.afomic.tradeapp.fragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,7 +35,21 @@ public class AddAccountDialog extends DialogFragment {
 
     private FirebaseAuth mAuth;
     private DatabaseReference userDatabaseRef;
-    PreferenceManager mPreferenceManager;
+    private PreferenceManager mPreferenceManager;
+    private AddAccountListener mListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mListener=(AddAccountListener) context;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mListener=null;
+    }
+
     public static AddAccountDialog newInstance(){
        return new AddAccountDialog();
     }
@@ -73,10 +88,14 @@ public class AddAccountDialog extends DialogFragment {
                             .setValue(username);
                     mPreferenceManager.setUsername(username);
                     mPreferenceManager.setUserLogin(true);
+                    mListener.onAddAccount(username);
                 }
             }
         });
 
         return builder.create();
+    }
+    public interface AddAccountListener{
+        void onAddAccount(String username);
     }
 }

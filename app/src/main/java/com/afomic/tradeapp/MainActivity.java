@@ -1,5 +1,6 @@
 package com.afomic.tradeapp;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.support.annotation.NonNull;
@@ -24,6 +25,7 @@ import com.afomic.tradeapp.fragment.MyAdsFragment;
 import com.afomic.tradeapp.fragment.SettingsFragment;
 import com.afomic.tradeapp.fragment.UserDetailsFragment;
 import com.afomic.tradeapp.model.User;
+import com.afomic.tradeapp.services.FirebaseChatListener;
 import com.afomic.tradeapp.util.Util;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,7 +38,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends BaseActivity implements SharedPreferences.OnSharedPreferenceChangeListener,
+        AddAccountDialog.AddAccountListener{
 
     DrawerLayout mDrawer;
     FragmentManager fm;
@@ -188,4 +191,11 @@ public class MainActivity extends BaseActivity implements SharedPreferences.OnSh
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onAddAccount(String username) {
+        Intent serviceIntent=new Intent(getApplicationContext(),FirebaseChatListener.class);
+        startService(serviceIntent);
+        Intent intent=new Intent(MainActivity.this, CreateTradeAdActivity.class);
+        startActivity(intent);
+    }
 }

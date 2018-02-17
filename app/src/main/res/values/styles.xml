@@ -16,10 +16,11 @@
 
     </style>
     <style name="darkTheme" parent="Theme.AppCompat">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorBlackBackground</item>
-        <item name="colorPrimaryDark">@color/colorBlack</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorWhite</item>
     </style>
 

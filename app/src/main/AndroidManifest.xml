@@ -36,6 +36,10 @@
 
         <activity android:name=".SelectLocationActivity">
         </activity>
+        <service android:name=".services.FirebaseChatListener"
+                 android:enabled="true"/>
+        <receiver android:name=".services.NotificationReceiver"
+            android:enabled="true"/>
     </application>
 
 </manifest>
