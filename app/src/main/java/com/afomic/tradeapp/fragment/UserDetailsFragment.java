@@ -3,13 +3,21 @@ package com.afomic.tradeapp.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afomic.tradeapp.R;
+import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
+import com.afomic.tradeapp.model.User;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
@@ -30,6 +38,8 @@ public class UserDetailsFragment extends Fragment {
     TextView userSinceTextView;
     @BindView(R.id.tv_location)
     TextView userLocationTextView;
+    @BindView(R.id.tv_last_seen)
+    TextView lastSeenTextView;
 
 
     private PreferenceManager mPreferenceManager;
@@ -53,6 +63,30 @@ public class UserDetailsFragment extends Fragment {
         userIdTextView.setText(mPreferenceManager.getUserId());
         usernameTextView.setText(mPreferenceManager.getUsername());
         userLocationTextView.setText(mPreferenceManager.getUserLocation());
+        FirebaseDatabase.getInstance()
+                .getReference(Constants.USERS_REF)
+                .orderByChild("userId")
+                .equalTo(mPreferenceManager.getUserId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            User user=snapshot.getValue(User.class);
+                            CharSequence lastSeen= DateUtils.getRelativeTimeSpanString(user.getLastSeen());
+                            lastSeenTextView.setText(lastSeen);
+                            CharSequence memberSince=DateUtils.getRelativeTimeSpanString(user.getMemberSince());
+                            userSinceTextView.setText(memberSince);
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
         return v;
     }
 

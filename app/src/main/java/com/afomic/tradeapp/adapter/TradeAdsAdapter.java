@@ -3,14 +3,21 @@ package com.afomic.tradeapp.adapter;
 import android.content.Context;
 import android.location.Location;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.afomic.tradeapp.R;
+import com.afomic.tradeapp.data.Constants;
 import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.model.TradeAd;
+import com.afomic.tradeapp.model.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 import java.util.Locale;
@@ -39,13 +46,33 @@ public class TradeAdsAdapter extends RecyclerView.Adapter<TradeAdsAdapter.TradeA
     }
 
     @Override
-    public void onBindViewHolder(TradeAdsHolder holder, int position) {
+    public void onBindViewHolder(final TradeAdsHolder holder, int position) {
         TradeAd ad=mTradeAds.get(position);
         holder.usernameTextView.setText(ad.getUsername());
         holder.offerTextView.setText(ad.getCurrencyToSell());
         holder.takingTextView.setText(ad.getCurrencyToBuy());
         float distanceBtwTrade=getLocationDifference(ad)/1000;
         holder.distanceTextView.setText(String.format(Locale.ENGLISH,"%.2f Km",distanceBtwTrade));
+        FirebaseDatabase.getInstance()
+                .getReference(Constants.USERS_REF)
+                .orderByChild("userId")
+                .equalTo(ad.getUserId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot snapshot:dataSnapshot.getChildren()){
+                            User user=snapshot.getValue(User.class);
+                            CharSequence lastSeen= DateUtils.getRelativeTimeSpanString(user.getLastSeen());
+                            holder.lastSeenTextView.setText(lastSeen);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     @Override

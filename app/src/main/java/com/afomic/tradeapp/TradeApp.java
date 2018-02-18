@@ -3,6 +3,8 @@ package com.afomic.tradeapp;
 import android.app.Application;
 import android.content.Intent;
 
+import com.afomic.tradeapp.data.Constants;
+import com.afomic.tradeapp.data.PreferenceManager;
 import com.afomic.tradeapp.services.FirebaseChatListener;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -18,5 +20,13 @@ public class TradeApp extends Application {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         Intent intent=new Intent(getApplicationContext(),FirebaseChatListener.class);
         startService(intent);
+        PreferenceManager preferenceManager=new PreferenceManager(getApplicationContext());
+        FirebaseDatabase.getInstance()
+                .getReference(Constants.USERS_REF)
+                .child(preferenceManager.getUserId())
+                .child("lastSeen")
+                .setValue(System.currentTimeMillis());
+
     }
+
 }
