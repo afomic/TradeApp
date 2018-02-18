@@ -57,6 +57,18 @@ public class ChatActivity extends BaseActivity {
     private DatabaseReference chatRef,messageRef;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        mPreferenceManager.setCurrentChatId(currentChat.getId());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPreferenceManager.setCurrentChatId("");
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);

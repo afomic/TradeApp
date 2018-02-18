@@ -29,8 +29,19 @@ public class NotificationReceiver extends BroadcastReceiver{
         Message message=intent.getParcelableExtra(Constants.EXTRA_MESSAGE);
         Chat chat=intent.getParcelableExtra(Constants.EXTRA_CHAT);
         PreferenceManager preferenceManager=new PreferenceManager(context);
+
+        //the new message is for the current chat
+        if(preferenceManager.getCurrentChatId().equals(chat.getId())){
+            return;
+        }
+
+
         String myUsername=preferenceManager.getUsername();
+
+        //get the sender name
         String senderName= chat.getUserTwo().equals(myUsername)?chat.getUserOne():chat.getUserTwo();
+
+        //build the notification for the new message
         Intent sentIntent=new Intent(context, ChatActivity.class);
         sentIntent.putExtra(Constants.EXTRA_CHAT,chat);
         sentIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -53,8 +64,15 @@ public class NotificationReceiver extends BroadcastReceiver{
         builder.setContentIntent(pi);
         builder.setWhen(System.currentTimeMillis());
         NotificationManagerCompat managerCompat= NotificationManagerCompat.from(context);
-        managerCompat.notify(3432, builder.build());
-
-
+        //get a unique id for each chat
+        int notificationId=getNotificationId(chat.getId());
+        managerCompat.notify(notificationId, builder.build());
+    }
+    public int getNotificationId(String chatId){
+        int notificationId=0;
+        for(int i=0;i<chatId.length();i++ ){
+            notificationId=chatId.charAt(i)+i;
+        }
+        return notificationId;
     }
 }

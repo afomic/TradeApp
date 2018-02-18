@@ -17,10 +17,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * Created by afomic on 2/13/18.
+ *
  */
 
 public class FirebaseChatListener extends Service {
-    private Chat lastChat;
 
     @Override
     public void onCreate() {
@@ -46,9 +46,6 @@ public class FirebaseChatListener extends Service {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         final Chat chat=dataSnapshot.getValue(Chat.class);
-                        if(chat!=null){
-                            Log.e(Constants.LOG_TAG, "onChildAdded: "+ chat.getLastMessage() );
-                        }
                         FirebaseDatabase
                                 .getInstance()
                                 .getReference(Constants.MESSAGES_REF)

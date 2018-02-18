@@ -17,6 +17,7 @@ public class PreferenceManager {
     private static final String PREF_USER_ID="user_id";
     private static final String PREF_USER_NAME="user_name";
     private static final String PREF_USER_HAS_ACCOUNT="has_account";
+    private static final String PREF_CURRENT_CHAT_ID="chat_id";
 
 
 
@@ -53,6 +54,11 @@ public class PreferenceManager {
         mEditor.putBoolean(PREF_USER_HAS_ACCOUNT,isLogin);
         mEditor.apply();
     }
+    public void setCurrentChatId(String chatId){
+        SharedPreferences.Editor mEditor=mSharedPreferences.edit();
+        mEditor.putString(PREF_CURRENT_CHAT_ID,chatId);
+        mEditor.apply();
+    }
     public boolean isUserLoggedIn(){
         return mSharedPreferences.getBoolean(PREF_USER_HAS_ACCOUNT,false);
     }
@@ -64,6 +70,9 @@ public class PreferenceManager {
     }
     public String getUserLocation(){
         return mSharedPreferences.getString(PREF_USER_LOCATION,"not found");
+    }
+    public String getCurrentChatId(){
+        return mSharedPreferences.getString(PREF_CURRENT_CHAT_ID,"");
     }
     public String getUserId(){
         return mSharedPreferences.getString(PREF_USER_ID,"");

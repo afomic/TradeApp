@@ -74,7 +74,6 @@ public class ChatAdapter  extends RecyclerView.Adapter<ChatAdapter.ChatHolder>{
         holder.lastMessageTextView.setText(chatItem.getLastMessage());
         String lastUpdateTime= DateUtil.formatDate(chatItem.getLastUpdate());
         holder.lastUpdateTextView.setText(lastUpdateTime);
-        Log.e("tag", "Redrawn: " );
 
         FirebaseDatabase.getInstance()
                 .getReference(Constants.CHATS_REF)
